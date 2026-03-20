@@ -94,7 +94,7 @@ $$g_i(\mathbf{x}) = \sum_{k=1}^{K} w_k \cdot \mathcal{N}(\mathbf{x} \mid \boldsy
 Δημιουργία των φακέλων `data/train`, `data/dev`, `data/test` στο εργασιακό directory `~/kaldi/egs/usc/`:
 
 ```
-scripts/3_4_2.py
+scripts/3_4_2.sh
 ```
 
 #### 3.4.3 Δημιουργία Αρχείων σε Κάθε Split
