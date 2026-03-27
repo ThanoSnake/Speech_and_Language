@@ -1,0 +1,141 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{amsmath}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{orange},
+    commentstyle=\color{gray},
+    frame=single,
+    breaklines=true,
+}
+
+\title{SLP Lab 3 --- Sentiment Analysis Report}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+%-----------------------------------------------------------------------
+\section{Data Loading and Preprocessing}
+
+\subsection{EX1 --- Label Encoding}
+
+String labels are converted to integer indices using \texttt{sklearn}'s
+\texttt{LabelEncoder}, which sorts the unique labels alphabetically and
+assigns each a zero-based integer.
+
+\begin{lstlisting}
+le = LabelEncoder()
+le.fit(y_train)
+y_train = le.transform(y_train)
+y_test  = le.transform(y_test)
+n_classes = le.classes_.size
+\end{lstlisting}
+
+For the \textbf{MR} dataset the mapping is:
+
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+Label & Index \\
+\midrule
+negative & 0 \\
+positive & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Sample output on the MR training set:
+
+\begin{lstlisting}[language={}]
+First 10 raw labels:
+['positive', 'positive', ..., 'positive']
+
+First 10 encoded:
+[1 1 1 1 1 1 1 1 1 1]
+\end{lstlisting}
+
+For \textbf{Semeval2017A} the encoder produces three classes:
+\texttt{negative} $\to$ 0, \texttt{neutral} $\to$ 1, \texttt{positive} $\to$ 2.
+
+\subsection{EX2 --- \texttt{SentenceDataset.\_\_init\_\_}}
+
+The dataset constructor tokenizes each raw sentence using NLTK's
+\texttt{TweetTokenizer} (chosen for its handling of Twitter-specific tokens
+such as hashtags, mentions, and emoticons) and maps each token to its index
+in the pre-trained embedding vocabulary.
+Out-of-vocabulary words are mapped to the \texttt{<unk>} token, which is
+added to \texttt{word2idx} with a random vector by \texttt{load\_word\_vectors}
+if not already present in the embeddings file.
+
+\begin{lstlisting}
+tokenizer = TweetTokenizer()
+self.data = [tokenizer.tokenize(sentence) for sentence in X]
+self.embedded_data = [
+    [word2idx.get(word, word2idx["<unk>"]) for word in sentence]
+    for sentence in self.data
+]
+self.labels = y
+self.word2idx = word2idx
+\end{lstlisting}
+
+\subsection{EX3 --- \texttt{SentenceDataset.\_\_getitem\_\_}}
+
+The \texttt{\_\_getitem\_\_} method returns a tuple of three values for a given index:
+
+\begin{enumerate}
+    \item \textbf{example} --- the padded/truncated sequence of word indices
+    \item \textbf{label} --- the integer class label
+    \item \textbf{length} --- the real number of tokens, excluding zero-padding
+\end{enumerate}
+
+\begin{lstlisting}
+def __getitem__(self, index):
+    embeddings = self.embedded_data[index]
+    length = min(len(self.data[index]), self.max_length)
+    label = self.labels[index]
+    return embeddings, label, length
+\end{lstlisting}
+
+The \texttt{max\_length} was set to \textbf{40} after inspecting the sentence length
+distribution in the training set. Sentences shorter than 40 tokens are zero-padded;
+longer sentences are truncated.
+
+The \texttt{length} is capped at \texttt{max\_length} because sentences that exceed
+it are truncated in \texttt{embedded\_data} --- returning the pre-truncation token
+count would be inconsistent with the actual stored sequence.
+
+Each example passes through three stages of processing, shown below for 3
+representative samples from the MR training set (max\_length = 40):
+
+\begin{lstlisting}[language={}]
+[0] Original  : the rock is destined to be the 21st century's new " conan "
+                and that he's going to make a splash even greater than arnold
+                schwarzenegger , jean-claud van damme or steven segal .
+[0] Tokenized : ['the', 'rock', 'is', 'destined', ..., 'segal', '.']
+[0] Encoded   : [14, 1287, 33, 37524, 17, 57, 14, ..., 0, 0, 0, 0, 0, 0]
+[0] Label     : 1 (positive) | Real length: 34
+
+[2] Original  : effective but too-tepid biopic
+[2] Tokenized : ['effective', 'but', 'too-tepid', 'biopic']
+[2] Encoded   : [11739, 80, 1193515, 120123, 0, 0, ..., 0]
+[2] Label     : 1 (positive) | Real length: 4
+
+[3] Original  : if you sometimes like to go to the movies to have fun ,
+                wasabi is a good place to start .
+[3] Tokenized : ['if', 'you', 'sometimes', 'like', ..., 'start', '.']
+[3] Encoded   : [75, 16, 693, 64, 17, 112, ..., 0, 0, 0, 0, 0]
+[3] Label     : 1 (positive) | Real length: 21
+\end{lstlisting}
+
+Index \texttt{1193515} corresponds to the \texttt{<unk>} token, which appears
+for out-of-vocabulary words such as \emph{too-tepid} and \emph{co-writer/director}.
+
+\end{document}
