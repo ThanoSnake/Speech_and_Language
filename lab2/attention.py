@@ -39,7 +39,7 @@ class FeedFoward(nn.Module):
             nn.Linear(n_embd, 4 * n_embd),
             nn.ReLU(),
             nn.Linear(4 * n_embd, n_embd),
-            nn.Dropout(dropout),
+            nn.Dropout(0.2),
         )
 
     def forward(self, x):
@@ -72,7 +72,7 @@ class SimpleSelfAttentionModel(nn.Module):
         # TODO: Main-lab-Q3 - define output classification layer
         self.output = nn.Linear(dim, output_size)
 
-    def forward(self, x, lengths=None):
+    def forward(self, x, lengths):
         B, T = x.shape
         tok_emb = self.token_embedding_table(x)  # (B,T,C)
         pos_emb = self.position_embedding_table(
@@ -84,12 +84,12 @@ class SimpleSelfAttentionModel(nn.Module):
 
         # TODO: Main-lab-Q3 - avg pooling to get a sentence embedding
         # Simple version (includes padding):
-        x = x.mean(dim=1)
+        # x = x.mean(dim=1)
         # Mask out padding positions before averaging
-        # mask = torch.arange(T, device=x.device).unsqueeze(0) < lengths.unsqueeze(
-        #   1
-        # )  # (B,T)
-        # x = (x * mask.unsqueeze(2)).sum(dim=1) / lengths.unsqueeze(1).float()  # (B,C)
+        # fmt: off
+        mask = torch.arange(T, device=x.device).unsqueeze(0) < lengths.unsqueeze(1)  # (B,T)
+        # fmt: on
+        x = (x * mask.unsqueeze(2)).sum(dim=1) / lengths.unsqueeze(1).float()  # (B,C)
 
         logits = self.output(x)  # (C,output)
         return logits
@@ -141,7 +141,7 @@ class MultiHeadAttentionModel(nn.Module):
 
         self.output = nn.Linear(dim, output_size)
 
-    def forward(self, x, lengths=None):
+    def forward(self, x, lengths):
         B, T = x.shape
         tok_emb = self.token_embedding_table(x)  # (B,T,C)
         pos_emb = self.position_embedding_table(
@@ -151,14 +151,13 @@ class MultiHeadAttentionModel(nn.Module):
         x = x + self.ma(self.ln1(x))
         x = x + self.ffwd(self.ln2(x))
 
-        # TODO: Main-lab-Q3 - avg pooling to get a sentence embedding
         # Simple version (includes padding):
-        x = x.mean(dim=1)
+        # x = x.mean(dim=1)
         # Mask out padding positions before averaging
-        # mask = torch.arange(T, device=x.device).unsqueeze(0) < lengths.unsqueeze(
-        #    1
-        # )  # (B,T)
-        # x = (x * mask.unsqueeze(2)).sum(dim=1) / lengths.unsqueeze(1).float()  # (B,C)
+        # fmt: off
+        mask = torch.arange(T, device=x.device).unsqueeze(0) < lengths.unsqueeze(1)  # (B,T)
+        # fmt: on
+        x = (x * mask.unsqueeze(2)).sum(dim=1) / lengths.unsqueeze(1).float()  # (B,C)
 
         logits = self.output(x)  # (C,output)
         return logits
@@ -189,20 +188,47 @@ class TransformerEncoderModel(nn.Module):
         # TODO: Main-Lab-Q5 - define the model
         # Hint: it will be similar to `MultiHeadAttentionModel` but now
         # there are blocks of MultiHeadAttention modules as defined below
-        ...
+        self.n_head = n_head
+        self.n_layer = n_layer
+        self.max_length = max_length
 
-        num_embeddings, dim = ...
+        embeddings = np.array(embeddings)
+        num_embeddings, dim = embeddings.shape
 
+        self.token_embedding_table = nn.Embedding(num_embeddings, dim)
+        self.token_embedding_table = self.token_embedding_table.from_pretrained(
+            torch.Tensor(embeddings), freeze=True
+        )
+        self.position_embedding_table = nn.Embedding(self.max_length, dim)
+
+        assert dim % self.n_head == 0, (
+            f"n_embd ({dim}) must be divisible by num_heads ({self.n_head}) beacuse of dumb impl"
+        )
         head_size = dim // self.n_head
         self.blocks = nn.Sequential(
             *[Block(n_head, head_size, dim) for _ in range(n_layer)]
         )
+
         self.ln_f = nn.LayerNorm(dim)  # final layer norm
+        self.output = nn.Linear(dim, output_size)
 
-        self.output = ...
+    def forward(self, x, lengths):
+        B, T = x.shape
+        tok_emb = self.token_embedding_table(x)  # (B,T,C)
+        pos_emb = self.position_embedding_table(
+            torch.arange(T, device=x.device)
+        )  # (T,C)
+        x = tok_emb + pos_emb  # (B,T,C)
+        x = self.blocks(x)
+        x = self.ln_f(x)
 
-    def forward(self, x):
-        ...
+        # Simple version (includes padding):
+        # x = x.mean(dim=1)
+        # Mask out padding positions before averaging
+        # fmt: off
+        mask = torch.arange(T, device=x.device).unsqueeze(0) < lengths.unsqueeze(1)  # (B,T)
+        # fmt: on
+        x = (x * mask.unsqueeze(2)).sum(dim=1) / lengths.unsqueeze(1).float()  # (B,C)
 
-        logits = ...
+        logits = self.output(x)
         return logits

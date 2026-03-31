@@ -5,6 +5,8 @@ from nltk.tokenize import TweetTokenizer
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
+MAX_SENTENCE_LEN = 40
+
 
 class SentenceDataset(Dataset):
     """
@@ -52,7 +54,7 @@ class SentenceDataset(Dataset):
             for sentence in self.data
         ]
 
-        self.max_length = 40
+        self.max_length = MAX_SENTENCE_LEN
         self.embedded_data = [
             (s + [0] * self.max_length)[: self.max_length] for s in self.embedded_data
         ]

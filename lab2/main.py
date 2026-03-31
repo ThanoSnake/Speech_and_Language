@@ -1,6 +1,5 @@
 import os
 import warnings
-from tkinter import Label
 
 import matplotlib.pyplot as plt
 import torch
@@ -9,9 +8,13 @@ from sklearn.exceptions import UndefinedMetricWarning
 from sklearn.preprocessing import LabelEncoder
 from torch.utils.data import DataLoader
 
-from attention import MultiHeadAttentionModel, SimpleSelfAttentionModel
+from attention import (
+    MultiHeadAttentionModel,
+    SimpleSelfAttentionModel,
+    TransformerEncoderModel,
+)
 from config import EMB_PATH
-from dataloading import SentenceDataset
+from dataloading import MAX_SENTENCE_LEN, SentenceDataset
 from early_stopper import EarlyStopper
 from models import LSTM, BaselineDNN
 from training import (
@@ -29,48 +32,76 @@ warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
 # Configuration
 ########################################################
 
-
-# Download the embeddings of your choice
-# for example http://nlp.stanford.edu/data/glove.6B.zip
-
-# 1 - point to the pretrained embeddings file (must be in /embeddings folder)
 EMBEDDINGS = os.path.join(EMB_PATH, "glove.twitter.27B.50d.txt")
-
-# 2 - set the correct dimensionality of the embeddings
 EMB_DIM = 50
-
 EMB_TRAINABLE = False
 BATCH_SIZE = 128
 EPOCHS = 50
-DATASET = "MR"  # options: "MR", "Semeval2017A"
+LEARNING_RATE = 1e-3
+PATIENCE = 5
+VAL_SIZE = 0.2
+RESULTS_DIR = "./results"
+MODELS_DIR = "./models"
 
-# if your computer has a CUDA compatible gpu use it, otherwise use the cpu
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+os.makedirs(RESULTS_DIR, exist_ok=True)
+os.makedirs(MODELS_DIR, exist_ok=True)
 
-def train_and_evaluate(
-    model,
-    train_set,
-    test_loader,
-    criterion,
-    epochs,
-    save_path="./best_model",
-    plot_title=None,
-    plot_save=None,
-):
+########################################################
+# Load embeddings (shared across datasets)
+########################################################
+
+word2idx, idx2word, embeddings = load_word_vectors(EMBEDDINGS, EMB_DIM)
+
+########################################################
+# Helpers
+########################################################
+
+DATASETS = {
+    "MR": {
+        "loader": load_MR,
+        "criterion": nn.BCEWithLogitsLoss(),
+        "output_dim": 1,
+    },
+    "Semeval2017A": {
+        "loader": load_Semeval2017A,
+        "criterion": nn.CrossEntropyLoss(),
+        "output_dim": 3,
+    },
+}
+
+
+def prepare_dataset(name):
+    """Load, encode, and wrap a dataset. Returns train_set, test_loader, criterion, output_dim."""
+    cfg = DATASETS[name]
+    X_train, y_train, X_test, y_test = cfg["loader"]()
+
+    le = LabelEncoder()
+    le.fit(y_train)
+    y_train = le.transform(y_train)
+    y_test = le.transform(y_test)
+
+    train_set = SentenceDataset(X_train, y_train, word2idx)
+    test_set = SentenceDataset(X_test, y_test, word2idx)
+    test_loader = DataLoader(test_set, batch_size=BATCH_SIZE)
+
+    return train_set, test_loader, cfg["criterion"], cfg["output_dim"]
+
+
+def train_single(model, train_set, test_loader, criterion, epochs, save_path):
+    """Train a model and return losses, final metrics string, and epochs run."""
     model.to(DEVICE)
     print(model)
     parameters = [p for p in model.parameters() if p.requires_grad]
-    optimizer = torch.optim.Adam(parameters, lr=1e-3)
+    optimizer = torch.optim.Adam(parameters, lr=LEARNING_RATE)
 
     train_loader, val_loader = torch_train_val_split(
-        train_set, BATCH_SIZE, BATCH_SIZE, val_size=0.2
+        train_set, BATCH_SIZE, BATCH_SIZE, val_size=VAL_SIZE
     )
 
-    train_losses = []
-    val_losses = []
-    test_losses = []
-    stopper = EarlyStopper(model, save_path, patience=5)
+    train_losses, val_losses, test_losses = [], [], []
+    stopper = EarlyStopper(model, save_path, patience=PATIENCE)
 
     for epoch in range(1, epochs + 1):
         train_dataset(epoch, train_loader, model, criterion, optimizer)
@@ -83,202 +114,152 @@ def train_and_evaluate(
         if stopper.early_stop(val_loss):
             break
 
+    epochs_run = len(train_losses)
     model.load_state_dict(torch.load(save_path))
-    _, (y_test_gold, y_test_pred) = eval_dataset(test_loader, model, criterion)
+    _, (y_gold, y_pred) = eval_dataset(test_loader, model, criterion)
+    metrics = get_metrics_report(y_gold, y_pred)
+    print(f"\n{metrics}")
 
-    report = f"Dataset: {DATASET}\n{get_metrics_report(y_test_gold, y_test_pred)}"
-    print(f"\n\n{report}")
-
-    results_file = save_path + "_results.txt"
-    with open(results_file, "w") as f:
-        f.write(report + "\n")
-
-    if plot_title:
-        plt.figure()
-        plt.plot(train_losses, label="Train Loss")
-        plt.plot(val_losses, label="Val Loss")
-        plt.plot(test_losses, label="Test Loss")
-        plt.xlabel("Epoch")
-        plt.ylabel("Loss")
-        plt.title(plot_title)
-        plt.legend()
-        if plot_save:
-            plt.savefig(plot_save)
-        plt.show()
-
-    return train_losses, val_losses, test_losses
+    return train_losses, val_losses, test_losses, metrics, epochs_run
 
 
-########################################################
-# Define PyTorch datasets and dataloaders
-########################################################
+def run_experiment(model_name, model_factory):
+    """Run a model on both datasets, save side-by-side plot and combined results."""
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    results_sections = []
+    model_arch = None
 
-# load word embeddings
-word2idx, idx2word, embeddings = load_word_vectors(EMBEDDINGS, EMB_DIM)
+    for i, ds_name in enumerate(DATASETS):
+        print(f"\n{'=' * 60}")
+        print(f"  {model_name} — {ds_name}")
+        print(f"{'=' * 60}")
 
-# load the raw data
-if DATASET == "Semeval2017A":
-    X_train, y_train, X_test, y_test = load_Semeval2017A()
-elif DATASET == "MR":
-    X_train, y_train, X_test, y_test = load_MR()
-else:
-    raise ValueError("Invalid dataset")
+        train_set, test_loader, criterion, output_dim = prepare_dataset(ds_name)
+        save_path = os.path.join(MODELS_DIR, f"{model_name}_{ds_name}")
+        model = model_factory(output_dim)
 
-# convert data labels from strings to integers
-# print("\n=== EX1: Label Encoding ===")
-# print(f"Dataset: {DATASET} | Classes: {sorted(set(y_train))}")
-# print("First 10 raw labels:")
-# print(y_train[0:10])
+        if model_arch is None:
+            model_arch = str(model)
 
-le = LabelEncoder()
-le.fit(y_train)
-y_train = le.transform(y_train)
-y_test = le.transform(y_test)
-n_classes = le.classes_.size
+        train_losses, val_losses, test_losses, metrics, epochs_run = train_single(
+            model, train_set, test_loader, criterion, EPOCHS, save_path
+        )
 
-# print(f"Label mapping: { {label: idx for idx, label in enumerate(le.classes_)} }")
-# print("First 10 encoded labels:")
-# print(y_train[0:10])
-# print(f"Number of classes: {n_classes}\n")
+        # Plot on subplot
+        ax = axes[i]
+        ax.plot(train_losses, label="Train Loss")
+        ax.plot(val_losses, label="Val Loss")
+        ax.plot(test_losses, label="Test Loss")
+        ax.set_xlabel("Epoch")
+        ax.set_ylabel("Loss")
+        ax.set_title(f"{ds_name}")
+        ax.legend()
 
-# Define our PyTorch-based Dataset
-train_set = SentenceDataset(X_train, y_train, word2idx)
-test_set = SentenceDataset(X_test, y_test, word2idx)
+        results_sections.append(
+            f"Dataset: {ds_name}\n  epochs_run: {epochs_run}/{EPOCHS}\n{metrics}"
+        )
 
-# EX3 - Print 5 examples in original form and as returned by SentenceDataset
-# print("\n=== EX3: Example Encoding (first 5 training examples) ===")
-# print(
-#     f"max_length={train_set.max_length} | 0-padded if short, truncated if long | <unk> index={word2idx['<unk>']}"
-# )
-# print()
-# for i in range(5):
-#     print(f"[{i}] Original  : {X_train[i]}")
-#     print(f"[{i}] Tokenized : {train_set.data[i]}")
-#     example, label, length = train_set[i]
-#     print(f"[{i}] Encoded   : {example}")
-#     print(f"[{i}] Label     : {label} ({le.classes_[label]}) | Real length: {length}")
-#     print()
+    fig.suptitle(f"Training Curves — {model_name}", fontsize=14)
+    fig.tight_layout()
+    plot_path = os.path.join(RESULTS_DIR, f"loss_{model_name}.png")
+    fig.savefig(plot_path)
+    plt.close(fig)
 
-# EX7 - Define our PyTorch-based DataLoader
-train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=True)  # EX7
-test_loader = DataLoader(test_set, batch_size=BATCH_SIZE)  # EX7
+    header = (
+        f"model: {model_name}\n"
+        f"embeddings: {os.path.basename(EMBEDDINGS)} (dim={EMB_DIM})\n"
+        f"emb_trainable: {EMB_TRAINABLE}\n"
+        f"max_sentence_length: {MAX_SENTENCE_LEN}\n"
+        f"batch_size: {BATCH_SIZE}\n"
+        f"max_epochs: {EPOCHS}\n"
+        f"learning_rate: {LEARNING_RATE}\n"
+        f"optimizer: Adam\n"
+        f"patience: {PATIENCE}\n"
+        f"val_size: {VAL_SIZE}\n"
+        f"device: {DEVICE}\n"
+        f"\n"
+        f"architecture:\n{model_arch}\n"
+    )
+
+    results_path = os.path.join(RESULTS_DIR, f"{model_name}_results.txt")
+    with open(results_path, "w") as f:
+        f.write(header + "\n" + "\n\n".join(results_sections) + "\n")
+
+    print(f"\nSaved plot: {plot_path}")
+    print(f"Saved results: {results_path}")
+
 
 #############################################################################
-# Model Definition (Model, Loss Function, Optimizer)
+# Model factories
 #############################################################################
 
-if DATASET == "MR":
-    criterion = nn.BCEWithLogitsLoss()
-    output_dim = 1  # single logit for binary classification
-elif DATASET == "Semeval2017A":
-    criterion = nn.CrossEntropyLoss()
-    output_dim = 3  # 3 classes: positive, negative, neutral
-else:
-    raise ValueError("Invalid dataset")
+
+def make_baseline(output_dim):
+    return BaselineDNN(
+        output_size=output_dim, embeddings=embeddings, trainable_emb=EMB_TRAINABLE
+    )
+
+
+def make_baseline_maxconcat(output_dim):
+    return BaselineDNN(
+        output_size=output_dim,
+        embeddings=embeddings,
+        trainable_emb=EMB_TRAINABLE,
+        max_concat=True,
+    )
+
+
+def make_lstm(output_dim):
+    return LSTM(
+        output_size=output_dim,
+        embeddings=embeddings,
+        trainable_emb=EMB_TRAINABLE,
+        bidirectional=False,
+    )
+
+
+def make_bilstm(output_dim):
+    return LSTM(
+        output_size=output_dim,
+        embeddings=embeddings,
+        trainable_emb=EMB_TRAINABLE,
+        bidirectional=True,
+    )
+
+
+def make_self_attention(output_dim):
+    return SimpleSelfAttentionModel(
+        output_size=output_dim,
+        embeddings=embeddings,
+    )
+
+
+def make_multihead_attention(output_dim):
+    return MultiHeadAttentionModel(
+        output_size=output_dim,
+        embeddings=embeddings,
+        n_head=5,
+    )
+
+
+def make_transformer(output_dim):
+    return TransformerEncoderModel(
+        output_size=output_dim,
+        embeddings=embeddings,
+        max_length=MAX_SENTENCE_LEN,
+        n_head=5,
+        n_layer=5,
+    )
+
 
 #############################################################################
-# Baseline DNN (mean pooling)
+# Run experiments — uncomment the ones you want to run
 #############################################################################
-print("\n=== Baseline DNN (mean pooling) ===")
-model = BaselineDNN(
-    output_size=output_dim, embeddings=embeddings, trainable_emb=EMB_TRAINABLE
-)
-train_and_evaluate(
-    model,
-    train_set,
-    test_loader,
-    criterion,
-    EPOCHS,
-    "./best_model",
-    plot_title=f"Training Curves - {DATASET} (mean)",
-    plot_save=f"loss_curve_{DATASET}.png",
-)
 
-#############################################################################
-# Q1 - DNN with mean + max pooling concatenation
-#############################################################################
-# print("\n=== Q1: DNN (mean + max pooling) ===")
-# model_q1 = BaselineDNN(
-#     output_size=output_dim, embeddings=embeddings,
-#     trainable_emb=EMB_TRAINABLE, max_concat=True,
-# )
-# train_and_evaluate(model_q1, train_set, test_loader, criterion, EPOCHS, "./best_model_q1",
-#     plot_title=f"Training Curves - {DATASET} (mean+max)", plot_save=f"loss_curve_{DATASET}_q1.png")
-
-#############################################################################
-# Q2 - LSTM
-#############################################################################
-# print("\n=== Q2.2: LSTM (unidirectional) ===")
-# model_lstm = LSTM(
-#     output_size=output_dim,
-#     embeddings=embeddings,
-#     trainable_emb=EMB_TRAINABLE,
-#     bidirectional=False,
-# )
-# train_and_evaluate(
-#     model_lstm,
-#     train_set,
-#     test_loader,
-#     criterion,
-#     EPOCHS,
-#     "./best_model_q2",
-#     plot_title=f"Training Curves - {DATASET} (LSTM)",
-#     plot_save=f"loss_curve_{DATASET}_q2.png",
-# )
-
-# print("\n=== Q2.3: BiLSTM ===")
-# model_bilstm = LSTM(
-#     output_size=output_dim,
-#     embeddings=embeddings,
-#     trainable_emb=EMB_TRAINABLE,
-#     bidirectional=True,
-# )
-# train_and_evaluate(
-#     model_bilstm,
-#     train_set,
-#     test_loader,
-#     criterion,
-#     EPOCHS,
-#     "./best_model_q2_bi",
-#     plot_title=f"Training Curves - {DATASET} (BiLSTM)",
-#     plot_save=f"loss_curve_{DATASET}_q2_bi.png",
-# )
-
-#############################################################################
-# Q3 - Self-Attention
-#############################################################################
-# print("\n=== Q3.1: Self-Attention ===")
-# model_sa = SimpleSelfAttentionModel(
-#     output_size=output_dim,
-#     embeddings=embeddings,
-# )
-# train_and_evaluate(
-#     model_sa,
-#     train_set,
-#     test_loader,
-#     criterion,
-#     EPOCHS,
-#     "./best_model_q3",
-#     plot_title=f"Training Curves - {DATASET} (Self-Attention)",
-#     plot_save=f"loss_curve_{DATASET}_q3.png",
-# )
-
-#############################################################################
-# Q4 - MultiHead Attention
-#############################################################################
-# print("\n=== Q4: MultiHead Attention ===")
-# model_mha = MultiHeadAttentionModel(
-#     output_size=output_dim,
-#     embeddings=embeddings,
-#     n_head=5,
-# )
-# train_and_evaluate(
-#     model_mha,
-#     train_set,
-#     test_loader,
-#     criterion,
-#     EPOCHS,
-#     "./best_model_q4",
-#     plot_title=f"Training Curves - {DATASET} (MultiHead Attention)",
-#     plot_save=f"loss_curve_{DATASET}_q4.png",
-# )
+# run_experiment("baseline", make_baseline)
+# run_experiment("baseline_maxconcat", make_baseline_maxconcat)
+# run_experiment("lstm", make_lstm)
+# run_experiment("bilstm", make_bilstm)
+# run_experiment("self_attention", make_self_attention)
+# run_experiment("multihead_attention", make_multihead_attention)
+run_experiment("transformer", make_transformer)

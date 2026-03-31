@@ -2,9 +2,4 @@
 solutions/
 embeddings/*.txt
 embeddings/*.p
-best_model
-best_model_q1
-best_model_q2
-best_model_q2_bi
-best_model_q3
-best_model_q4
+models/

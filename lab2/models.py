@@ -37,7 +37,7 @@ class BaselineDNN(nn.Module):
         self.embedding.weight.requires_grad = trainable_emb  # EX4
 
         # 4 - define a non-linear transformation of the representations
-        hidden_size = 1024
+        hidden_size = 50
         self.fc1 = nn.Linear((2 if max_concat else 1) * emb_dim, hidden_size)
         self.ac1 = nn.ReLU()  # EX5
 

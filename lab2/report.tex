@@ -402,19 +402,16 @@ F1 Score (macro) & 0.580 \\
 \end{tabular}
 \end{center}
 
-The training curves (train and test loss per epoch) for each dataset are shown below.
+The training curves (train and test loss per epoch) for both datasets are shown below.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{loss_curve_MR.png}
-\caption{Training curves for the MR dataset.}
+\includegraphics[width=\textwidth]{results/loss_baseline.png}
+\caption{Training curves for the Baseline DNN (mean pooling) on MR (left) and Semeval2017A (right).}
 \end{figure}
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{loss_curve_Semeval2017A.png}
-\caption{Training curves for the Semeval2017A dataset.}
-\end{figure}
+Results (\texttt{results/baseline\_results.txt}):
+\lstinputlisting[language={}]{results/baseline_results.txt}
 
 \subsection{EX11 --- Observations}
 
@@ -480,23 +477,67 @@ self.fc1 = nn.Linear(
 
 \subsection{1.3 --- Αποτελέσματα}
 
-\begin{center}
-\begin{tabular}{llccc}
-\toprule
-Dataset & Representation & Accuracy & Recall & F1 \\
-\midrule
-MR          & mean only  & 0.660 & 0.661 & 0.660 \\
-MR          & mean + max & 0.680 & 0.684 & 0.678 \\
-\midrule
-Semeval2017A & mean only  & 0.601 & 0.591 & 0.580 \\
-Semeval2017A & mean + max & 0.605 & 0.598 & 0.582 \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{results/loss_baseline_maxconcat.png}
+\caption{Training curves for DNN with mean+max pooling on MR (left) and Semeval2017A (right).}
+\end{figure}
+
+Results (\texttt{results/baseline\_maxconcat\_results.txt}):
+\lstinputlisting[language={}]{results/baseline_maxconcat_results.txt}
 
 Η συνένωση mean + max pooling βελτιώνει σταθερά και τα δύο datasets,
 με μεγαλύτερη διαφορά στο MR ($\sim$+2\% F1). Το αποτέλεσμα
 επιβεβαιώνει ότι το max pooling συνεισφέρει συμπληρωματική πληροφορία
 που ο μέσος όρος μόνος του αραιώνει.
+
+%=======================================================================
+\section{Ερώτημα 2 --- LSTM \& BiLSTM}
+
+\subsection{2.1 --- LSTM}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{results/loss_lstm.png}
+\caption{Training curves for LSTM on MR (left) and Semeval2017A (right).}
+\end{figure}
+
+Results (\texttt{results/lstm\_results.txt}):
+\lstinputlisting[language={}]{results/lstm_results.txt}
+
+\subsection{2.2 --- BiLSTM}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{results/loss_bilstm.png}
+\caption{Training curves for BiLSTM on MR (left) and Semeval2017A (right).}
+\end{figure}
+
+Results (\texttt{results/bilstm\_results.txt}):
+\lstinputlisting[language={}]{results/bilstm_results.txt}
+
+%=======================================================================
+\section{Ερώτημα 3 --- Self-Attention}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{results/loss_self_attention.png}
+\caption{Training curves for Self-Attention on MR (left) and Semeval2017A (right).}
+\end{figure}
+
+Results (\texttt{results/self\_attention\_results.txt}):
+\lstinputlisting[language={}]{results/self_attention_results.txt}
+
+%=======================================================================
+\section{Ερώτημα 4 --- MultiHead Attention}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{results/loss_multihead_attention.png}
+\caption{Training curves for MultiHead Attention on MR (left) and Semeval2017A (right).}
+\end{figure}
+
+Results (\texttt{results/multihead\_attention\_results.txt}):
+\lstinputlisting[language={}]{results/multihead_attention_results.txt}
 
 \end{document}
