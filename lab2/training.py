@@ -1,9 +1,10 @@
 import math
 import sys
+
 import numpy as np
 import torch
+from sklearn.metrics import accuracy_score, f1_score, recall_score
 from torch.utils.data import DataLoader, SubsetRandomSampler
-from sklearn.metrics import f1_score, accuracy_score, recall_score
 
 
 def progress(loss, epoch, batch, batch_size, dataset_size):
@@ -14,10 +15,9 @@ def progress(loss, epoch, batch, batch_size, dataset_size):
     count = batch * batch_size
     bar_len = 40
     filled_len = int(round(bar_len * count / float(dataset_size)))
+    bar = "=" * filled_len + "-" * (bar_len - filled_len)
 
-    bar = '=' * filled_len + '-' * (bar_len - filled_len)
-
-    status = 'Epoch {}, Loss: {:.4f}'.format(epoch, loss)
+    status = "Epoch {}, Loss: {:.4f}".format(epoch, loss)
     _progress_str = "\r \r [{}] ...{}".format(bar, status)
     sys.stdout.write(_progress_str)
     sys.stdout.flush()
@@ -40,9 +40,9 @@ def train_dataset(_epoch, dataloader, model, loss_function, optimizer):
         inputs, labels, lengths = batch
 
         # move the batch tensors to the right device
-        inputs = inputs.to(device)
-        labels = labels.to(device)
-        lengths = lengths.to(device) # EX9
+        inputs = inputs.to(device)  # EX9
+        labels = labels.to(device)  # EX9
+        lengths = lengths.to(device)  # EX9
 
         # Step 1 - zero the gradients
         # Remember that PyTorch accumulates gradients.
@@ -53,11 +53,11 @@ def train_dataset(_epoch, dataloader, model, loss_function, optimizer):
         outputs = model(inputs, lengths)  # EX9
 
         # Step 3 - compute loss: L = loss_function(y, y')
-        # Προσοχή: Το BCEWithLogitsLoss θέλει τα labels σε float αν είναι binary
+        # For BCEWithLogitsLoss: squeeze output and cast labels to float
         if isinstance(loss_function, torch.nn.BCEWithLogitsLoss):
-            loss = loss_function(outputs.squeeze(), labels.float())
-        else:
-            loss = loss_function(outputs, labels)  # EX9
+            outputs = outputs.squeeze(1)
+            labels = labels.float()
+        loss = loss_function(outputs, labels)  # EX9
 
         # Step 4 - backward pass: compute gradient wrt model parameters
         loss.backward()  # EX9
@@ -68,11 +68,13 @@ def train_dataset(_epoch, dataloader, model, loss_function, optimizer):
         running_loss += loss.data.item()
 
         # print statistics
-        progress(loss=loss.data.item(),
-                 epoch=_epoch,
-                 batch=index,
-                 batch_size=dataloader.batch_size,
-                 dataset_size=len(dataloader.dataset))
+        progress(
+            loss=loss.data.item(),
+            epoch=_epoch,
+            batch=index,
+            batch_size=dataloader.batch_size,
+            dataset_size=len(dataloader.dataset),
+        )
 
     return running_loss / index
 
@@ -97,8 +99,8 @@ def eval_dataset(dataloader, model, loss_function):
             inputs, labels, lengths = batch
 
             # Step 1 - move the batch tensors to the right device
-            inputs = inputs.to(device)
-            labels = labels.to(device)
+            inputs = inputs.to(device)  # EX9
+            labels = labels.to(device)  # EX9
             lengths = lengths.to(device)  # EX9
 
             # Step 2 - forward pass: y' = model(x)
@@ -108,20 +110,18 @@ def eval_dataset(dataloader, model, loss_function):
             # We compute the loss only for inspection (compare train/test loss)
             # because we do not actually backpropagate in test time
             if isinstance(loss_function, torch.nn.BCEWithLogitsLoss):
-                loss = loss_function(outputs.squeeze(), labels.float())
-            else:
-                loss = loss_function(outputs, labels)  # EX9
+                outputs = outputs.squeeze(1)
+                labels = labels.float()
+            loss = loss_function(outputs, labels)  # EX9
 
             # Step 4 - make predictions (class = argmax of posteriors)
             if isinstance(loss_function, torch.nn.BCEWithLogitsLoss):
-                # Binary: αν το logit > 0 τότε κλάση 1, αλλιώς 0
-                predictions = (outputs.squeeze() > 0).int()
+                predicted = (outputs > 0).long()  # EX9
             else:
-                # Multi-class: παίρνουμε το index με τη μέγιστη τιμή
-                _, predictions = torch.max(outputs, dim=1)  # EX9
+                predicted = torch.argmax(outputs, dim=1)  # EX9
 
             # Step 5 - collect the predictions, gold labels and batch loss
-            y_pred.append(predictions.cpu().numpy())
+            y_pred.append(predicted.cpu().numpy())  # EX9
             y.append(labels.cpu().numpy())  # EX9
 
             running_loss += loss.data.item()
@@ -146,10 +146,8 @@ def torch_train_val_split(
     train_sampler = SubsetRandomSampler(train_indices)
     val_sampler = SubsetRandomSampler(val_indices)
 
-    train_loader = DataLoader(
-        dataset, batch_size=batch_train, sampler=train_sampler)
-    val_loader = DataLoader(
-        dataset, batch_size=batch_eval, sampler=val_sampler)
+    train_loader = DataLoader(dataset, batch_size=batch_train, sampler=train_sampler)
+    val_loader = DataLoader(dataset, batch_size=batch_eval, sampler=val_sampler)
     return train_loader, val_loader
 
 
@@ -158,6 +156,8 @@ def get_metrics_report(y, y_hat):
     y = np.concatenate(y, axis=0)
     y_hat = np.concatenate(y_hat, axis=0)
     # report metrics
-    report = f'  accuracy: {accuracy_score(y, y_hat)}\n  recall: ' + \
-        f'{recall_score(y, y_hat, average="macro")}\n  f1-score: {f1_score(y, y_hat,average="macro")}'
+    report = (
+        f"  accuracy: {accuracy_score(y, y_hat)}\n  recall: "
+        + f"{recall_score(y, y_hat, average='macro')}\n  f1-score: {f1_score(y, y_hat, average='macro')}"
+    )
     return report

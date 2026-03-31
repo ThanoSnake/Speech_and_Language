@@ -1,3 +1,7 @@
+from collections import Counter
+
+import torch
+from nltk.tokenize import TweetTokenizer
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
@@ -31,29 +35,30 @@ class SentenceDataset(Dataset):
             word2idx (dict): a dictionary which maps words to indexes
         """
 
-        # self.data = X
-        # self.labels = y
-        # self.word2idx = word2idx
+        # EX 2
+        tokenizer = TweetTokenizer()
+        self.data = [tokenizer.tokenize(sentence) for sentence in X]
 
-        # EX2
-        # EX2 - Initialization and Tokenization
-        self.word2idx = word2idx
+        # print("\n=== EX2: Tokenization (first 10 sentences) ===")
+        # for i, tokens in enumerate(self.data[:10]):
+        #     print(f"[{i}] {tokens}")
+        # print()
+        # Explore data size to choose max_length
+        # cnt = Counter(len(sentence) for sentence in self.data)
+        # print(cnt)
+
+        self.embedded_data = [
+            [word2idx.get(word, word2idx["<unk>"]) for word in sentence]
+            for sentence in self.data
+        ]
+
+        self.max_length = 40
+        self.embedded_data = [
+            (s + [0] * self.max_length)[: self.max_length] for s in self.embedded_data
+        ]
+
         self.labels = y
-        
-        # Λίστα για να αποθηκεύσουμε τα tokenized κείμενα
-        self.data = []
-        
-        print("Tokenizing data...")
-        for sentence in tqdm(X):
-            # Απλός διαχωρισμός με βάση το κενό και μετατροπή σε πεζά
-            # Μπορείς να χρησιμοποιήσεις .lower() για να ταυτίζονται οι λέξεις
-            tokens = sentence.lower().split()
-            self.data.append(tokens)
-
-        # Εκτύπωση των πρώτων 10 παραδειγμάτων (Ζητούμενο 2)
-        print("\nFirst 10 tokenized examples:")
-        for i in range(10):
-            print(f"{i+1}: {self.data[i]}")
+        self.word2idx = word2idx
 
     def __len__(self):
         """
@@ -93,37 +98,8 @@ class SentenceDataset(Dataset):
         """
 
         # EX3
-    def __getitem__(self, index):
-        # EX3 - Get a single example and its label
-        tokens = self.data[index]
+        embeddings = torch.tensor(self.embedded_data[index], dtype=torch.long)
+        length = min(len(self.data[index]), self.max_length)
         label = self.labels[index]
-        
-        # Ορίζουμε το μέγιστο μήκος (max_length)
-        # Για το MR (ταινίες) το 50-60 είναι καλό, για Twitter το 50 είναι υπέρ αρκετό.
-        max_length = 50 
 
-        # 1. Mapping tokens to IDs
-        indices = []
-        unk_index = self.word2idx.get("<unk>") # Παίρνουμε το ID του <unk> από το dictionary
-        
-        for word in tokens:
-            # Αν η λέξη υπάρχει, πάρε το ID της. Αν όχι, πάρε το unk_index.
-            indices.append(self.word2idx.get(word, unk_index))
-
-        # Κρατάμε το πραγματικό μήκος πριν το padding
-        # Αν η πρόταση είναι μεγαλύτερη από το max_length, το μήκος περιορίζεται
-        real_length = min(len(indices), max_length)
-
-        # 2. Padding / Truncating (Zero-padding)
-        if len(indices) < max_length:
-            # Συμπλήρωση με μηδενικά (0) στο τέλος
-            indices += [0] * (max_length - len(indices))
-        else:
-            # Περικοπή (Truncation) αν ξεπερνά το μέγιστο μήκος
-            indices = indices[:max_length]
-
-        import numpy as np
-        return np.array(indices), label, real_length
-        # return example, label, length
-        #raise NotImplementedError
-
+        return embeddings, label, length

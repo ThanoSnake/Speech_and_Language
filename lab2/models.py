@@ -1,5 +1,5 @@
-import torch
 import numpy as np
+import torch
 from torch import nn
 
 
@@ -12,7 +12,7 @@ class BaselineDNN(nn.Module):
        to the number of classes.ngth)
     """
 
-    def __init__(self, output_size, embeddings, trainable_emb=False):
+    def __init__(self, output_size, embeddings, trainable_emb=False, max_concat=False):
         """
 
         Args:
@@ -24,46 +24,29 @@ class BaselineDNN(nn.Module):
 
         super(BaselineDNN, self).__init__()
 
-        # Μετατροπή των embeddings σε PyTorch Tensor (αν είναι numpy array)
-        embeddings = torch.tensor(embeddings, dtype=torch.float)
-        num_embeddings, emb_dim = embeddings.shape
-
-        # EX4 - 1, 2 & 3: Ορισμός, Αρχικοποίηση και "Πάγωμα" του Embedding Layer
-        # Η μέθοδος from_pretrained κάνει και τα 3 βήματα μαζί:
-        # - Δημιουργεί το layer με τις σωστές διαστάσεις
-        # - Φορτώνει τα βάρη από τον πίνακα embeddings
-        # - Παγώνει (freeze=True) ή αφήνει τα βάρη να εκπαιδευτούν (freeze=False)
-        self.embedding = nn.Embedding.from_pretrained(embeddings, freeze=not trainable_emb)
+        emb_dim = len(embeddings[0])
 
         # 1 - define the embedding layer
-        ...  # EX4
+        self.embedding = nn.Embedding(len(embeddings), emb_dim)  # EX4
 
         # 2 - initialize the weights of our Embedding layer
         # from the pretrained word embeddings
-        ...  # EX4
+        self.embedding.weight = nn.Parameter(torch.Tensor(embeddings))  # EX4
 
         # 3 - define if the embedding layer will be frozen or finetuned
-        ...  # EX4
+        self.embedding.weight.requires_grad = trainable_emb  # EX4
 
         # 4 - define a non-linear transformation of the representations
-        ...  # EX5
+        hidden_size = 1024
+        self.fc1 = nn.Linear((2 if max_concat else 1) * emb_dim, hidden_size)
+        self.ac1 = nn.ReLU()  # EX5
 
         # 5 - define the final Linear layer which maps
         # the representations to the classes
-        ...  # EX5
+        self.output_layer = nn.Linear(hidden_size, output_size)  # EX5
 
-        # Σημείωση: Το emb_dim το παίρνουμε από το σχήμα των embeddings
-        #emb_dim = embeddings.shape[1]
-        hidden_dim = 100  # Επιλογή μας (π.χ. 64, 100, 128)
-
-        # EX5 - 4: Μη γραμμικός μετασχηματισμός
-        # Ένα Linear layer ακολουθούμενο από μια συνάρτηση ενεργοποίησης (ReLU)
-        self.feature_transform = nn.Linear(emb_dim, hidden_dim)
-        self.relu = nn.ReLU()
-
-        # EX5 - 5: Τελικό Linear layer (Classification)
-        # Προβολή από το hidden_dim στον αριθμό των κλάσεων (output_size)
-        self.output_layer = nn.Linear(hidden_dim, output_size)
+        # Used for q1
+        self.max_concat = max_concat
 
     def forward(self, x, lengths):
         """
@@ -75,53 +58,38 @@ class BaselineDNN(nn.Module):
         """
 
         # 1 - embed the words, using the embedding layer
-        #embeddings = ...  # EX6
+        embeddings = self.embedding(x)  # EX6
 
         # 2 - construct a sentence representation out of the word embeddings
-        #representations = ...  # EX6
+        representations = (
+            torch.sum(embeddings, dim=1) / lengths.unsqueeze(1).float()
+        )  # EX6
+        if self.max_concat:
+            max_emb = torch.max(embeddings, dim=1).values
+            representations = torch.cat((representations, max_emb), dim=1)
 
         # 3 - transform the representations to new ones.
-        #representations = ...  # EX6
+        representations = self.ac1(self.fc1(representations))  # EX6
 
         # 4 - project the representations to classes using a linear layer
-        #logits = ...  # EX6
-
-        # 1 - Μετατροπή των indices σε embeddings
-        # Είσοδος x: [batch_size, max_length]
-        # Έξοδος embeddings: [batch_size, max_length, emb_dim]
-        embeddings = self.embedding(x)
-
-        # 2 - Δημιουργία αναπαράστασης πρότασης (Mean Pooling)
-        # ΠΡΟΣΟΧΗ: Πρέπει να διαιρέσουμε με το πραγματικό μήκος (lengths), όχι το max_length.
-        
-        # Άθροισμα των embeddings κατά μήκος των λέξεων (dim=1)
-        # sum_embeddings shape: [batch_size, emb_dim]
-        sum_embeddings = torch.sum(embeddings, dim=1)
-        
-        # Μετατρέπουμε τα lengths σε float και τους δίνουμε σωστό σχήμα για τη διαίρεση
-        # lengths.view(-1, 1) μετατρέπει το [batch_size] σε [batch_size, 1]
-        representations = sum_embeddings / lengths.view(-1, 1).float()
-
-        # 3 - Μη γραμμικός μετασχηματισμός (από το EX5)
-        representations = self.feature_transform(representations)
-        representations = self.relu(representations)
-
-        # 4 - Τελική προβολή στις κλάσεις (Logits)
-        logits = self.output_layer(representations)
+        logits = self.output_layer(representations)  # EX6
 
         return logits
 
 
 class LSTM(nn.Module):
-    def __init__(self, output_size, embeddings, trainable_emb=False, bidirectional=False):
+    def __init__(
+        self, output_size, embeddings, trainable_emb=False, bidirectional=False
+    ):
 
         super(LSTM, self).__init__()
         self.hidden_size = 100
         self.num_layers = 1
         self.bidirectional = bidirectional
 
-        self.representation_size = 2 * \
-            self.hidden_size if self.bidirectional else self.hidden_size
+        self.representation_size = (
+            2 * self.hidden_size if self.bidirectional else self.hidden_size
+        )
 
         embeddings = np.array(embeddings)
         num_embeddings, dim = embeddings.shape
@@ -129,12 +97,17 @@ class LSTM(nn.Module):
         self.embeddings = nn.Embedding(num_embeddings, dim)
         self.output_size = output_size
 
-        self.lstm = nn.LSTM(dim, hidden_size=self.hidden_size,
-                            num_layers=self.num_layers, bidirectional=self.bidirectional)
+        self.lstm = nn.LSTM(
+            dim,
+            hidden_size=self.hidden_size,
+            num_layers=self.num_layers,
+            bidirectional=self.bidirectional,
+        )
 
         if not trainable_emb:
             self.embeddings = self.embeddings.from_pretrained(
-                torch.Tensor(embeddings), freeze=True)
+                torch.Tensor(embeddings), freeze=True
+            )
 
         self.linear = nn.Linear(self.representation_size, output_size)
 
@@ -142,7 +115,8 @@ class LSTM(nn.Module):
         batch_size, max_length = x.shape
         embeddings = self.embeddings(x)
         X = torch.nn.utils.rnn.pack_padded_sequence(
-            embeddings, lengths, batch_first=True, enforce_sorted=False)
+            embeddings, lengths.cpu(), batch_first=True, enforce_sorted=False
+        )
 
         ht, _ = self.lstm(X)
 
@@ -151,7 +125,8 @@ class LSTM(nn.Module):
 
         # pick the output of the lstm corresponding to the last word
         # TODO: Main-Lab-Q2 (Hint: take actual lengths into consideration)
-        representations = ...
+        # Collapse to batch_size x hidden_dim
+        representations = ht[torch.arange(batch_size), lengths - 1]
 
         logits = self.linear(representations)
 

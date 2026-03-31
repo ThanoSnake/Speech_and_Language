@@ -1,11 +1,11 @@
-import torch
 import numpy as np
+import torch
 from torch import nn
 from torch.nn import functional as F
 
 
 class Head(nn.Module):
-    """ one head of self-attention """
+    """one head of self-attention"""
 
     def __init__(self, head_size, n_embd, dropout=0.0):
         super().__init__()
@@ -17,7 +17,7 @@ class Head(nn.Module):
 
     def forward(self, x):
         B, T, C = x.shape
-        k = self.key(x)   # (B,T,C)
+        k = self.key(x)  # (B,T,C)
         q = self.query(x)  # (B,T,C)
         # compute attention scores ("affinities")
         # (B, T, C) @ (B, C, T) -> (B, T, T)
@@ -31,7 +31,7 @@ class Head(nn.Module):
 
 
 class FeedFoward(nn.Module):
-    """ a simple linear layer followed by a non-linearity """
+    """a simple linear layer followed by a non-linearity"""
 
     def __init__(self, n_embd, dropout=0.0):
         super().__init__()
@@ -47,7 +47,6 @@ class FeedFoward(nn.Module):
 
 
 class SimpleSelfAttentionModel(nn.Module):
-
     def __init__(self, output_size, embeddings, max_length=60):
         super().__init__()
 
@@ -59,7 +58,9 @@ class SimpleSelfAttentionModel(nn.Module):
 
         self.token_embedding_table = nn.Embedding(num_embeddings, dim)
         self.token_embedding_table = self.token_embedding_table.from_pretrained(
-            torch.Tensor(embeddings), freeze=True)
+            torch.Tensor(embeddings), freeze=True
+        )
+
         self.position_embedding_table = nn.Embedding(self.max_length, dim)
 
         head_size = dim // self.n_head
@@ -69,30 +70,37 @@ class SimpleSelfAttentionModel(nn.Module):
         self.ln2 = nn.LayerNorm(dim)
 
         # TODO: Main-lab-Q3 - define output classification layer
-        self.output = ...
+        self.output = nn.Linear(dim, output_size)
 
-    def forward(self, x):
+    def forward(self, x, lengths=None):
         B, T = x.shape
         tok_emb = self.token_embedding_table(x)  # (B,T,C)
-        pos_emb = self.position_embedding_table(torch.arange(T))  # (T,C)
+        pos_emb = self.position_embedding_table(
+            torch.arange(T, device=x.device)
+        )  # (T,C)
         x = tok_emb + pos_emb  # (B,T,C)
         x = x + self.sa(self.ln1(x))
         x = x + self.ffwd(self.ln2(x))
 
         # TODO: Main-lab-Q3 - avg pooling to get a sentence embedding
-        x = ...  # (B,C)
+        # Simple version (includes padding):
+        x = x.mean(dim=1)
+        # Mask out padding positions before averaging
+        # mask = torch.arange(T, device=x.device).unsqueeze(0) < lengths.unsqueeze(
+        #   1
+        # )  # (B,T)
+        # x = (x * mask.unsqueeze(2)).sum(dim=1) / lengths.unsqueeze(1).float()  # (B,C)
 
         logits = self.output(x)  # (C,output)
         return logits
 
 
 class MultiHeadAttention(nn.Module):
-    """ multiple heads of self-attention in parallel """
+    """multiple heads of self-attention in parallel"""
 
     def __init__(self, num_heads, head_size, n_embd, dropout=0.0):
         super().__init__()
-        self.heads = nn.ModuleList([Head(head_size, n_embd)
-                                    for _ in range(num_heads)])
+        self.heads = nn.ModuleList([Head(head_size, n_embd) for _ in range(num_heads)])
         self.proj = nn.Linear(n_embd, n_embd)
         self.dropout = nn.Dropout(dropout)
 
@@ -103,24 +111,61 @@ class MultiHeadAttention(nn.Module):
 
 
 class MultiHeadAttentionModel(nn.Module):
-
     def __init__(self, output_size, embeddings, max_length=60, n_head=3):
         super().__init__()
-
         # TODO: Main-Lab-Q4 - define the model
         # Hint: it will be similar to `SimpleSelfAttentionModel` but
         # `MultiHeadAttention` will be utilized for the self-attention module here
-        ...
 
-    def forward(self, x):
-        ...
+        self.n_head = n_head
+        self.max_length = max_length
 
-        logits = ...
+        embeddings = np.array(embeddings)
+        num_embeddings, dim = embeddings.shape
+
+        self.token_embedding_table = nn.Embedding(num_embeddings, dim)
+        self.token_embedding_table = self.token_embedding_table.from_pretrained(
+            torch.Tensor(embeddings), freeze=True
+        )
+
+        self.position_embedding_table = nn.Embedding(self.max_length, dim)
+
+        assert dim % self.n_head == 0, (
+            f"n_embd ({dim}) must be divisible by num_heads ({self.n_head}) beacuse of dumb impl"
+        )
+        head_size = dim // self.n_head
+        self.ma = MultiHeadAttention(n_head, head_size, dim)
+        self.ffwd = FeedFoward(dim)
+        self.ln1 = nn.LayerNorm(dim)
+        self.ln2 = nn.LayerNorm(dim)
+
+        self.output = nn.Linear(dim, output_size)
+
+    def forward(self, x, lengths=None):
+        B, T = x.shape
+        tok_emb = self.token_embedding_table(x)  # (B,T,C)
+        pos_emb = self.position_embedding_table(
+            torch.arange(T, device=x.device)
+        )  # (T,C)
+        x = tok_emb + pos_emb  # (B,T,C)
+        x = x + self.ma(self.ln1(x))
+        x = x + self.ffwd(self.ln2(x))
+
+        # TODO: Main-lab-Q3 - avg pooling to get a sentence embedding
+        # Simple version (includes padding):
+        x = x.mean(dim=1)
+        # Mask out padding positions before averaging
+        # mask = torch.arange(T, device=x.device).unsqueeze(0) < lengths.unsqueeze(
+        #    1
+        # )  # (B,T)
+        # x = (x * mask.unsqueeze(2)).sum(dim=1) / lengths.unsqueeze(1).float()  # (B,C)
+
+        logits = self.output(x)  # (C,output)
         return logits
 
 
 class Block(nn.Module):
-    """ Transformer block: communication followed by computation """
+    """Transformer block: communication followed by computation"""
 
     def __init__(self, n_head, head_size, n_embd):
         # n_embd: embedding dimension, n_head: the number of heads we'd like
@@ -150,7 +195,8 @@ class TransformerEncoderModel(nn.Module):
 
         head_size = dim // self.n_head
         self.blocks = nn.Sequential(
-            *[Block(n_head, head_size, dim) for _ in range(n_layer)])
+            *[Block(n_head, head_size, dim) for _ in range(n_layer)]
+        )
         self.ln_f = nn.LayerNorm(dim)  # final layer norm
 
         self.output = ...
