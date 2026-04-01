@@ -1,9 +1,31 @@
+model: baseline
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+
+architecture:
+BaselineDNN(
+  (embedding): Embedding(1291148, 50)
+  (fc1): Linear(in_features=50, out_features=50, bias=True)
+  (ac1): ReLU()
+  (output_layer): Linear(in_features=50, out_features=1, bias=True)
+)
+
 Dataset: MR
-  accuracy: 0.6616314199395771
-  recall: 0.6616373212117893
-  f1-score: 0.6616283315078496
+  epochs_run: 28/50
+  accuracy: 0.7039274924471299
+  recall: 0.7040466862105811
+  f1-score: 0.7038842484823589
 
 Dataset: Semeval2017A
-  accuracy: 0.5997232171930967
-  recall: 0.5908524704313233
-  f1-score: 0.5767538788583036
+  epochs_run: 31/50
+  accuracy: 0.5626831650928037
+  recall: 0.5584697319831963
+  f1-score: 0.5321799286429868

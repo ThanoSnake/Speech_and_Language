@@ -32,7 +32,10 @@ warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
 # Configuration
 ########################################################
 
-EMBEDDINGS = os.path.join(EMB_PATH, "glove.twitter.27B.50d.txt")
+EMBEDDINGS = os.path.join(
+    EMB_PATH,
+    "wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt",
+)
 EMB_DIM = 50
 EMB_TRAINABLE = False
 BATCH_SIZE = 128
@@ -256,10 +259,10 @@ def make_transformer(output_dim):
 # Run experiments — uncomment the ones you want to run
 #############################################################################
 
-# run_experiment("baseline", make_baseline)
+run_experiment("baseline", make_baseline)
 # run_experiment("baseline_maxconcat", make_baseline_maxconcat)
 # run_experiment("lstm", make_lstm)
 # run_experiment("bilstm", make_bilstm)
 # run_experiment("self_attention", make_self_attention)
 # run_experiment("multihead_attention", make_multihead_attention)
-run_experiment("transformer", make_transformer)
+# run_experiment("transformer", make_transformer)

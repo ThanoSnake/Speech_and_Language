@@ -1,0 +1,24 @@
+Dataset: MR
+============================================================
+
+Model: distilbert-base-uncased-finetuned-sst-2-english
+  samples: 662
+  time: 2.8s (239.5 samples/s)
+  accuracy: 0.8912386706948641
+  recall: 0.8912386706948641
+  f1-score: 0.8912138475021911
+
+Model: siebert/sentiment-roberta-large-english
+  samples: 662
+  time: 8.8s (75.1 samples/s)
+  accuracy: 0.9244712990936556
+  recall: 0.9244712990936557
+  f1-score: 0.9244685414898182
+
+Model: textattack/bert-base-uncased-SST-2
+  samples: 662
+  time: 5.0s (132.7 samples/s)
+  accuracy: 0.8987915407854985
+  recall: 0.8987915407854985
+  f1-score: 0.898739552393846
+

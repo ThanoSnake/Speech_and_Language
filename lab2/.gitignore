@@ -3,3 +3,4 @@ solutions/
 embeddings/*.txt
 embeddings/*.p
 models/
+__pycache__/

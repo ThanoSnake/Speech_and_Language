@@ -1,0 +1,24 @@
+Dataset: Semeval2017A
+============================================================
+
+Model: cardiffnlp/twitter-roberta-base-sentiment
+  samples: 12284
+  time: 93.5s (131.4 samples/s)
+  accuracy: 0.7237870400521003
+  recall: 0.7229454214750545
+  f1-score: 0.7222115953560642
+
+Model: finiteautomata/bertweet-base-sentiment-analysis
+  samples: 12284
+  time: 98.5s (124.7 samples/s)
+  accuracy: 0.7177629436665581
+  recall: 0.7301871228078923
+  f1-score: 0.718050644575488
+
+Model: j-hartmann/sentiment-roberta-large-english-3-classes
+  samples: 12284
+  time: 159.9s (76.8 samples/s)
+  accuracy: 0.6984695538912407
+  recall: 0.6487496105621454
+  f1-score: 0.6693682259677626
+

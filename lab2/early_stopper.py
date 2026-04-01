@@ -1,5 +1,5 @@
-import torch
 import numpy as np
+import torch
 
 
 class EarlyStopper:
@@ -16,7 +16,7 @@ class EarlyStopper:
             self.min_validation_loss = validation_loss
             self.counter = 0
             torch.save(self.model.state_dict(), self.save_path)
-            print('best model!')
+            print(" best model!")
         elif validation_loss > (self.min_validation_loss + self.min_delta):
             self.counter += 1
             if self.counter >= self.patience:
