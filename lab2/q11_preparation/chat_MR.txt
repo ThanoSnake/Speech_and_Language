@@ -1,0 +1,166 @@
+PROMPT:
+
+You are an expert movie critic and sentiment analyzer. I will provide you with 40 short movie reviews below. Your task is to carefully read each review and classify its sentiment as exactly either "Positive" or "Negative". Please format your output as a numbered list matching the input order, without any additional explanations.
+
+Reviews to classify:
+1. a masterpiece four years in the making .
+2. simplistic , silly and tedious .
+3. emerges as something rare , an issue movie that's so honest and keenly observed that it doesn't feel like one .
+4. a visually flashy but narratively opaque and emotionally vapid exercise in style and mystification .
+5. bad company . bad movie . just plain bad .
+6. spiderman rocks
+7. interesting , but not compelling .
+8. a thoughtful , provocative , insistently humanizing film .
+9. stupid , infantile , redundant , sloppy , over-the-top , and amateurish .
+10. i loved it ! gollum's 'performance' is incredible !
+11. guaranteed to move anyone who ever shook , rattled , or rolled .
+12. the movie is a mess from start to finish .
+13. a taut , intelligent psychological drama .
+14. the story is also as unoriginal as they come , already having been recycled more times than i'd care to count .
+15. it's so laddish and juvenile , only teenage boys could possibly find it funny .
+16. tender yet lacerating and darkly funny fable .
+17. chicago is sophisticated , brash , sardonic , completely joyful in its execution .
+18. an odd , haphazard , and inconsequential romantic comedy .
+19. one of the greatest family-oriented , fantasy-adventure movies ever .
+20. a sentimental mess that never rings true .
+21. managed to be original , even though it rips off many of its ideas .
+22. a real movie , about real people , that gives us a rare glimpse into a culture most of us don't know .
+23. the movie's something-borrowed construction feels less the product of loving , well integrated homage and more like a mere excuse for the wan , thinly sketched story . killing time , that's all that's going on here .
+24. a sports movie with action that's exciting on the field and a story you care about off it .
+25. truly terrible .
+26. all the more disquieting for its relatively gore-free allusions to the serial murders , but it falls down in its attempts to humanize its subject .
+27. offers a breath of the fresh air of true sophistication .
+28. it's the best film of the year so far , the benchmark against which all other best picture contenders should be measured .
+29. holds limited appeal to those who like explosions , sadism and seeing people beat each other to a pulp .
+30. an engaging overview of johnson's eccentric career .
+31. the action clichés just pile up .
+32. not so much farcical as sour . unfortunately the story and the actors are served with a hack script .
+33. run , don't walk , to see this barbed and bracing comedy on the big screen .
+34. deadly dull , pointless meditation on losers in a gone-to-seed hotel .
+35. the movie is a blast of educational energy , as bouncy animation and catchy songs escort you through the entire 85 minutes .
+36. stinks from start to finish , like a wet burlap sack of gloom .
+37. a truly moving experience , and a perfect example of how art -- when done right -- can help heal , clarify , and comfort .
+38. i survived . please , someone , stop eric schaeffer before he makes another film .
+39. everytime you think undercover brother has run out of steam , it finds a new way to surprise and amuse .
+40. exploitative and largely devoid of the depth or sophistication that would make watching such a graphic treatment of the crimes bearable .
+
+
+ANSWER:
+
+1. Positive
+2. Negative
+3. Positive
+4. Negative
+5. Negative
+6. Positive
+7. Negative
+8. Positive
+9. Negative
+10. Positive
+11. Positive
+12. Negative
+13. Positive
+14. Negative
+15. Negative
+16. Positive
+17. Positive
+18. Negative
+19. Positive
+20. Negative
+21. Positive
+22. Positive
+23. Negative
+24. Positive
+25. Negative
+26. Negative
+27. Positive
+28. Positive
+29. Negative
+30. Positive
+31. Negative
+32. Negative
+33. Positive
+34. Negative
+35. Positive
+36. Negative
+37. Positive
+38. Negative
+39. Positive
+40. Negative
+
+ACURRACY = 1
+
+
+PROMPT:
+I would like you to analyze your decision-making process for the sentiment classification of the 40 reviews you just processed.
+
+Please select 6 examples from the list: 3 that were 'Easy' to classify and 3 that were 'Challenging' or ambiguous for you. For each of these 6 examples, provide an analysis in the following format:
+
+Text: [The original review text]
+Difficulty Level: [Easy / Challenging]
+Decision Method: [Explain your reasoning. Did you focus on specific keywords, the overall tone, or the syntactic structure? Mention which words carried the most weight for your decision.]
+
+Please explain if any linguistic features like sarcasm, double negatives, or intensity modifiers influenced your confidence in these specific cases.
+
+
+ANSWER:
+
+1.
+Text: a masterpiece four years in the making .
+Difficulty Level: Easy
+Decision Method: The keyword “masterpiece” is a very strong positive indicator. It clearly conveys high praise with no conflicting language. The tone is straightforward and unambiguous, so no deeper structural analysis was needed.
+
+2.
+Text: bad company . bad movie . just plain bad .
+Difficulty Level: Easy
+Decision Method: Repetition of the word “bad” three times creates strong negative emphasis. The intensity modifier “just plain bad” reinforces the sentiment. No ambiguity or contrast—purely negative.
+
+3.
+Text: i loved it ! gollum's 'performance' is incredible !
+Difficulty Level: Easy
+Decision Method: Strong positive emotional keywords like “loved” and “incredible” dominate. Exclamation marks add intensity. Although “performance” is in quotes, it doesn’t negate the praise—it likely refers to a CGI character, not sarcasm.
+
+4.
+Text: interesting , but not compelling .
+Difficulty Level: Challenging
+Decision Method: This required weighing contrasting clauses. “Interesting” is positive, but the conjunction “but” signals a shift. The phrase “not compelling” ultimately weakens the experience and carries more weight, leading to a negative classification. The syntactic structure (contrastive conjunction) was key.
+
+5.
+Text: managed to be original , even though it rips off many of its ideas .
+Difficulty Level: Challenging
+Decision Method: This sentence contains a contradiction: “original” (positive) vs. “rips off many of its ideas” (negative). The phrase “managed to be” suggests a positive outcome despite flaws. I judged the overall tone as mildly positive because it acknowledges criticism but emphasizes achievement. The concessive structure (“even though”) made this ambiguous.
+
+6.
+Text: all the more disquieting for its relatively gore-free allusions to the serial murders , but it falls down in its attempts to humanize its subject .
+Difficulty Level: Challenging
+Decision Method: The first clause (“all the more disquieting”) could be interpreted as praise (effective tone), but the second clause introduced by “but” is clearly negative: “falls down in its attempts”. The contrastive structure again shifts the overall sentiment toward negative. The complexity and mixed signals made this less straightforward.
+
+Notes on Linguistic Features:
+Contrast words (“but”, “even though”) were the biggest source of ambiguity, often shifting sentiment toward the latter clause.
+Intensity modifiers (e.g., “just plain bad”, “incredible”) increased confidence in easy cases.
+Mixed sentiment sentences required prioritizing the dominant clause or final evaluation.
+No strong sarcasm or double negatives appeared, but quotation marks (e.g., “performance”) briefly raised the possibility of irony, though context clarified intent.
+
+
+ΣΧΟΛΙΑΣΜΟΣ:
+
+ΣΤΡΑΤΗΓΙΚΗ PROMPTING:
+Έγινε ανάθεση ρόλου κριτικού κινηματογράφου. Η στρατηγική αυτή βοηθά το μοντέλο να προσαρμόσει το λεξιλόγιό του στο συγκεκριμένο τομέα (κριτικές ταινιών). Τα δείγματα δόθηκαν ανακατεμένα για την αποφυγή bias λόγω σειράς, και ζητήθηκε η ταξινόμηση σε δύο κλάσεις (Positive/Negative).
+
+ΑΠΟΤΕΛΕΣΜΑΤΑ:
+Το μοντέλο πέτυχε ακρίβεια 1 στα 40 δείγματα του ελέγχου. Παρά το γεγονός ότι ορισμένες κριτικές ήταν σύντομες ή περιείχαν αντιθέσεις, το μοντέλο δεν έκανε κανένα σφάλμα, αποδεικνύοντας ότι η προ-εκπαίδευσή του σε τεράστιο όγκο δεδομένων του επιτρέπει να αναγνωρίζει το συναίσθημα ακόμη και χωρίς fine-tuning.
+
+ΑΛΛΗΛΕΠΙΔΡΑΣΗ:
+Το μοντέλο αποκαλύπτει ότι δίνει βάρος σε συγκεκριμένα tokens (attention). Για παράδειγμα, στην πρόταση 1, η λέξη "masterpiece" λειτούργησε ως ο κυρίαρχος δείκτης συναισθήματος. Ακόμα, σε Challenging περιπτώσεις (π.χ. παραδείγματα 7, 21, 26), το μοντέλο δεν έκανε απλό "bag-of-words" count. Αντιλήφθηκε τη συντακτική δομή των αντιθέσεων. Αναγνώρισε ότι σύνδεσμοι όπως το "but" ή το "even though" μετατοπίζουν το σημασιολογικό βάρος στο δεύτερο σκέλος της πρότασης. Τέλος το μοντέλο εντόπισε ότι εκφράσεις όπως "just plain bad" ή "truly terrible" ενισχύουν το συναίσθημα προς μια κατεύθυνση. 
+
+ΣΥΜΠΕΡΣΜΑ:
+Το κυριότερο πλεονέκτημα του μοντέλου στο MR dataset είναι η ικανότητά του να διαχειρίζεται την αμφισημία. Εκεί που ένα LSTM μπορεί να μπερδευτεί από την παρουσία μιας θετικής λέξης μέσα σε μια αρνητική κριτική ("interesting but not compelling"), το LLM αντιλαμβάνεται ότι η τελική κρίση του συντάκτη βρίσκεται στον περιορισμό που υφίσταται μια θετικής λέξης από μια πιθανή αρνητική συνέχεια.
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,205 @@
+PROMPT:
+
+You are an expert social media sentiment analyzer. I will provide you with 60 tweets below. Your task is to carefully read each tweet and classify its sentiment strictly into one of three categories: "Positive", "Negative", or "Neutral". Please format your output as a numbered list matching the input order, without any additional explanations. Give the answer in code format for copy paste.
+
+Tweets to classify:
+1. So excited for the new Marvel movie! The trailer looks absolutely epic.
+2. The meeting has been rescheduled to Thursday at 3 PM EST.
+3. Flight delayed by 4 hours with zero communication. Thanks for nothing, Delta.
+4. Thank you @Starbucks for the free birthday drink! Made my morning.
+5. Apple announced three new iPhone models at their event today.
+6. I am so sick and tired of these spam calls every single morning.
+7. The Hamilton soundtrack is pure genius. Lin-Manuel Miranda is a legend.
+8. Just bought a new desk lamp from IKEA.
+9. The series finale of Game of Thrones was a massive disappointment.
+10. Had the most amazing dinner at Gordon Ramsay's new restaurant. 10/10.
+11. Does anyone know what time the library closes on Sundays?
+12. Ugh, dropped my phone and the screen shattered completely. Worst day.
+13. I passed my final exams! Officially graduating next week! 🎓
+14. Watching the baseball game on ESPN right now.
+15. Traffic on the 405 is an absolute nightmare right now. Avoid at all costs.
+16. Loving the new iOS update, the dark mode is so smooth and beautiful.
+17. The recipe calls for two cups of flour and one cup of sugar.
+18. Food arrived cold and completely wrong. Never ordering from here again.
+19. Ariana Grande's vocal range is out of this world. What a queen.
+20. Just a reminder that daylight savings time starts this weekend.
+21. Why is the wifi so incredibly slow today? I can't get any work done!
+22. Happy Friday everyone! Hope you all have a beautiful and relaxing weekend.
+23. Here is the link to the live stream of the press conference.
+24. So frustrated with this ridiculous new return policy. Total scam.
+25. My dog just learned a new trick and he is the goodest boy ever!
+26. Checking out the new coffee shop downtown later today.
+27. Woke up with a terrible migraine and I have a huge presentation today. 😭
+28. This weather is absolutely perfect for a beach day. ☀️
+29. The temperature is expected to reach 75 degrees tomorrow.
+30. The referee in this game is completely blind. Terrible calls all night.
+31. Shoutout to my amazing friends for throwing me a surprise party. Feeling loved.
+32. Article: "How the stock market performed in the third quarter."
+33. I paid $50 for this concert and the sound quality is garbage.
+34. The new album from Taylor Swift is a masterpiece. No skips.
+35. My flight to Chicago departs at 8:45 AM from Gate B12.
+36. Just spilled hot coffee all over my clean white shirt. Great start.
+37. Just got promoted at work! All the hard work finally paid off.
+38. I need to go to the grocery store after work to pick up some milk.
+39. The customer service representative was incredibly rude and unhelpful.
+40. Huge congratulations to Serena Williams on another phenomenal victory!
+41. Currently reading chapter 4 of the biology textbook.
+42. I'm so disappointed in the latest software update, it ruined my battery life.
+43. The customer support from Amazon was surprisingly fast and helpful today.
+44. The local marathon will cause some road closures on Main Street.
+45. Another political debate, another headache. They just yell over each other.
+46. I can't stop listening to this new track, the beat is so catchy.
+47. Elon Musk tweeted about the upcoming SpaceX launch schedule.
+48. My package was supposed to arrive three days ago and it's still missing.
+49. Best vacation ever. Hawaii is literally paradise on earth.
+50. Did you see the news about the earthquake in California?
+51. This movie is an absolute waste of time. Don't bother watching it.
+52. So proud of my little sister for getting accepted into her dream college!
+53. I am planning to paint the living room walls grey this weekend.
+54. Feeling incredibly stressed and overwhelmed with all these deadlines.
+55. The sunset tonight is breathtakingly beautiful.
+56. The new semester begins on September 5th for all undergraduate students.
+57. I hate when people don't use their turn signals. So dangerous and annoying.
+58. First time trying matcha latte and I'm officially obsessed.
+59. Just finished washing the car.
+60. This headache just won't go away, feeling absolutely miserable.
+
+ANSWER:
+
+1. Positive
+2. Neutral
+3. Negative
+4. Positive
+5. Neutral
+6. Negative
+7. Positive
+8. Neutral
+9. Negative
+10. Positive
+11. Neutral
+12. Negative
+13. Positive
+14. Neutral
+15. Negative
+16. Positive
+17. Neutral
+18. Negative
+19. Positive
+20. Neutral
+21. Negative
+22. Positive
+23. Neutral
+24. Negative
+25. Positive
+26. Neutral
+27. Negative
+28. Positive
+29. Neutral
+30. Negative
+31. Positive
+32. Neutral
+33. Negative
+34. Positive
+35. Neutral
+36. Negative
+37. Positive
+38. Neutral
+39. Negative
+40. Positive
+41. Neutral
+42. Negative
+43. Positive
+44. Neutral
+45. Negative
+46. Positive
+47. Neutral
+48. Negative
+49. Positive
+50. Neutral
+51. Negative
+52. Positive
+53. Neutral
+54. Negative
+55. Positive
+56. Neutral
+57. Negative
+58. Positive
+59. Neutral
+60. Negative
+
+ACCURACY = 1
+
+
+PROMPT:
+I would like you to analyze your decision-making process for the sentiment classification of the 60 tweets you just processed into Positive, Negative, and Neutral categories.
+
+Please select 6 representative examples from the list: 2 from each category (Positive, Negative, and Neutral). For each category, choose 1 'Easy' case and 1 'Challenging' or ambiguous cases. Provide the analysis in the following format:
+
+Category: [Positive / Negative / Neutral]
+Text: [The original tweet text]
+Difficulty Level: [Easy / Challenging]
+Decision Method: [Explain your reasoning. Did you focus on specific emotional keywords, the factual/informative nature of the text, or the use of punctuation and emojis? Mention which specific words or symbols carried the most weight for your decision. For 'Challenging' cases, explain why it was difficult to distinguish from the other two categories (e.g., why a tweet was Neutral instead of Negative).]
+
+Please explain if any social media-specific features like hashtags, mentions, sarcasm, or intensity modifiers (e.g., "absolute", "zero") influenced your confidence in these specific cases. Finally, state which of the three categories was the most difficult to identify consistently and why.
+
+ANSWER:
+
+Category: Positive
+Text: I passed my final exams! Officially graduating next week! 🎓
+Difficulty Level: Easy
+Decision Method:
+This is clearly positive due to strong emotional indicators like “passed,” “graduating,” and the celebratory emoji 🎓. The exclamation marks reinforce excitement and achievement. These are high-confidence positive signals commonly associated with success and happiness.
+
+Category: Positive
+Text: First time trying matcha latte and I'm officially obsessed.
+Difficulty Level: Challenging
+Decision Method:
+The word “obsessed” is a strong positive intensity modifier, but in some contexts it could be sarcastic or exaggerated. Here, there’s no negative cue, so it’s interpreted as genuine enthusiasm. The absence of emojis or punctuation makes it slightly less explicit than the easy case, but still positive overall.
+
+Category: Negative
+Text: Flight delayed by 4 hours with zero communication. Thanks for nothing, Delta.
+Difficulty Level: Easy
+Decision Method:
+Clear negative sentiment driven by phrases like “delayed by 4 hours” and “zero communication.” The phrase “Thanks for nothing” is a classic sarcastic expression indicating dissatisfaction. The intensity modifier “zero” amplifies frustration, making this an unambiguous negative case.
+
+Category: Negative
+Text: Another political debate, another headache. They just yell over each other.
+Difficulty Level: Challenging
+Decision Method:
+This is negative but more implicit. Words like “headache” and “yell” signal frustration, but there’s no direct complaint like “I hate this.” The repetition structure (“another… another…”) conveys fatigue. It could borderline be interpreted as neutral commentary, but the negative connotation of “headache” tipped the decision.
+
+Category: Neutral
+Text: Apple announced three new iPhone models at their event today.
+Difficulty Level: Easy
+Decision Method:
+Purely informational with no emotional language. Verbs like “announced” and nouns like “event” are factual. No adjectives or punctuation suggesting opinion. This fits a standard neutral/news-style tweet.
+
+Category: Neutral
+Text: Checking out the new coffee shop downtown later today.
+Difficulty Level: Challenging
+Decision Method:
+This could be interpreted as mildly positive (anticipation), but there are no explicit sentiment markers. The phrase “checking out” is exploratory rather than evaluative. No adjectives like “excited” or “great,” so it remains neutral. The ambiguity comes from implied intent versus explicit sentiment.
+
+Influence of Social Media Features
+Sarcasm: Played a key role in identifying negativity (e.g., “Thanks for nothing”).
+Intensity modifiers: Words like “zero,” “absolutely,” and “obsessed” strongly influenced polarity and confidence.
+Emojis & punctuation: Emojis (🎓) and exclamation marks increased confidence in positive classifications.
+Implicit tone: Some tweets relied on subtle phrasing rather than explicit sentiment, increasing difficulty.
+Most Difficult Category to Identify
+
+Neutral was the hardest to classify consistently.
+
+This is because many neutral tweets can contain implicit sentiment (e.g., anticipation, mild frustration, or enthusiasm) without explicit emotional words. Distinguishing between:
+
+truly factual statements
+vs.
+subtly positive/negative intent
+
+requires careful interpretation, and small wording differences can shift the classification.
+
+ΣΧΟΛΙΑΣΜΟΣ:
+Σε αυτό το dataset, η δυσκολία αυξήθηκε με την προσθήκη της Ουδέτερης (Neutral) κατηγορίας. Η τακτική απόδοσης ρόλου στο μοντέλο είναι κρίσιμη για τα tweets, καθώς η γλώσσα των social media διαφέρει σημαντικά από τις επίσημες κριτικές (χρήση αργκό, emojis, συντομογραφίες). Το μοντέλο πέτυχε ακρίβεια 1 στα 60 δείγματα που του δόθηκαν. Εντόπισε σωστά τον σαρκασμό (π.χ. "Thanks for nothing, Delta"). Ενώ οι λέξεις "Thanks" και "nothing" είναι μεμονωμένα θετικές/ουδέτερες, το μοντέλο αντιλήφθηκε την ειρωνεία, κάτι που απαιτεί βαθιά κατανόηση του context (Contextualized και όχι static Embeddings). Για την κατηγορία Neutral, το μοντέλο βασίστηκε στην απουσία επίθετων και στη χρήση «πραγματολογικών» ρημάτων (π.χ. "announced", "rescheduled"), τα οποία υποδηλώνουν μεταφορά πληροφορίας και όχι γνώμης.
+
+Πολλά tweets που φαίνονται ουδέτερα κρύβουν έμμεση πρόθεση. Για παράδειγμα, η φράση "Checking out the new coffee shop" (παράδειγμα Challenging Neutral) θα μπορούσε να θεωρηθεί θετική λόγω προσμονής. Το μοντέλο επέλεξε το Neutral λόγω έλλειψης ρητών επιθέτων, δείχνοντας μια συντηρητική και σωστή προσέγγιση στην ταξινόμηση.
+
+Συμπέρασμα: Η επιτυχία του μοντέλου στο Semeval dataset οφείλεται στο ότι δεν λειτουργεί ως απλός ταξινομητής λέξεων, αλλά ως αναλυτής λόγου. Αξιοποιεί στοιχεία των μέσων κοινωνικής δικτύωσης (emojis, έντονη στίξη), αποδεικνύοντας ότι στην πλατφόρμα του Twitter, ο τρόπος γραφής είναι εξίσου σημαντικός με το περιεχόμενο.
