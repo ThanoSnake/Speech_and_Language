@@ -37,14 +37,39 @@
 \subsection{Ζητούμενο 1 --- Κωδικοποίηση Επισημειώσεων}
 
 Οι επισημειώσεις (labels) κωδικοποιούνται σε ακέραιους μέσω του
-\texttt{LabelEncoder} του scikit-learn. Για το \textbf{MR}
-dataset (δυαδική κατηγοριοποίηση):
-\texttt{negative}~$\to 0$, \texttt{positive}~$\to 1$.
-Για το \textbf{Semeval2017A} (τρεις κλάσεις):
-\texttt{negative}~$\to 0$, \texttt{neutral}~$\to 1$, \texttt{positive}~$\to 2$.
+\texttt{LabelEncoder} του scikit-learn, ο οποίος ταξινομεί αλφαβητικά
+τις μοναδικές ετικέτες και τους αποδίδει μηδενο-βασισμένους δείκτες.
+Η αντιστοίχιση εφαρμόζεται ταυτόχρονα στο training και test set, ώστε
+να είναι συνεπής.
 
-Η αλφαβητική ταξινόμηση εγγυάται ότι η αντιστοίχιση είναι ντετερμινιστική
-και ίδια μεταξύ training και test set.
+\begin{lstlisting}
+DEBUG = True   # global flag -- set False to silence all debug prints
+
+# EX1 -- label encoding
+le = LabelEncoder()
+le.fit(y_train)
+y_train = le.transform(y_train)
+y_test  = le.transform(y_test)
+
+if DEBUG:
+    print("Classes:", le.classes_)
+    print("First 10 raw labels:", list(y_train_raw[:10]))
+    print("First 10 encoded:   ", y_train[:10])
+\end{lstlisting}
+
+Παράδειγμα εξόδου για \textbf{MR}:
+
+\begin{lstlisting}[language={}]
+[MR] EX1 -- Label encoding
+  Classes:             ['negative' 'positive']
+  First 10 raw labels: ['positive', 'positive', 'positive', 'positive',
+                        'positive', 'positive', 'positive', 'positive',
+                        'positive', 'positive']
+  First 10 encoded:    [1 1 1 1 1 1 1 1 1 1]
+\end{lstlisting}
+
+Για το \textbf{Semeval2017A} (τρίκλαση):
+\texttt{negative}~$\to 0$, \texttt{neutral}~$\to 1$, \texttt{positive}~$\to 2$.
 
 \subsection{Ζητούμενο 2 --- Λεκτική Ανάλυση (Tokenization)}
 

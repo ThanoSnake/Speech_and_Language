@@ -32,6 +32,8 @@ warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
 # Configuration
 ########################################################
 
+DEBUG = True  # set False to silence all debug/diagnostic prints
+
 EMBEDDINGS = os.path.join(
     EMB_PATH,
     "wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt",
@@ -80,10 +82,18 @@ def prepare_dataset(name):
     cfg = DATASETS[name]
     X_train, y_train, X_test, y_test = cfg["loader"]()
 
+    # EX1 -- label encoding
     le = LabelEncoder()
     le.fit(y_train)
+    y_train_raw = list(y_train[:10])  # save before overwriting
     y_train = le.transform(y_train)
     y_test = le.transform(y_test)
+
+    if DEBUG:
+        print(f"\n[{name}] EX1 -- Label encoding")
+        print(f"  Classes:             {le.classes_}")
+        print(f"  First 10 raw labels: {y_train_raw}")
+        print(f"  First 10 encoded:    {y_train[:10]}")
 
     train_set = SentenceDataset(X_train, y_train, word2idx)
     test_set = SentenceDataset(X_test, y_test, word2idx)
