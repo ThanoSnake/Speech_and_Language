@@ -1,0 +1,468 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[LGR,T1]{fontenc}
+\usepackage[greek,english]{babel}
+\usepackage{alphabeta}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[unicode]{hyperref}
+
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{orange},
+    commentstyle=\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+}
+
+\title{SLP Lab 2 --- Sentiment Analysis Report\\[0.3em]\large Προπαρασκευή \& Κυρίως Εργαστήριο}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\part{Προπαρασκευή}
+
+%-----------------------------------------------------------------------
+\section{Φόρτωση και Προεπεξεργασία Δεδομένων}
+
+\subsection{Ζητούμενο 1 --- Κωδικοποίηση Επισημειώσεων}
+
+Οι επισημειώσεις (labels) κωδικοποιούνται σε ακέραιους μέσω του
+\texttt{LabelEncoder} του scikit-learn, ο οποίος ταξινομεί αλφαβητικά
+τις μοναδικές ετικέτες και τους αποδίδει μηδενο-βασισμένους δείκτες.
+Η αντιστοίχιση εφαρμόζεται ταυτόχρονα στο training και test set, ώστε
+να είναι συνεπής.
+
+\begin{lstlisting}
+DEBUG = True   # global flag -- set False to silence all debug prints
+
+# EX1 -- label encoding
+le = LabelEncoder()
+le.fit(y_train)
+y_train = le.transform(y_train)
+y_test  = le.transform(y_test)
+
+if DEBUG:
+    print("Classes:", le.classes_)
+    print("First 10 raw labels:", list(y_train_raw[:10]))
+    print("First 10 encoded:   ", y_train[:10])
+\end{lstlisting}
+
+Παράδειγμα εξόδου για \textbf{MR}:
+
+\begin{lstlisting}[language={}]
+[MR] EX1 -- Label encoding
+  Classes:             ['negative' 'positive']
+  First 10 raw labels: ['positive', 'positive', 'positive', 'positive',
+                        'positive', 'positive', 'positive', 'positive',
+                        'positive', 'positive']
+  First 10 encoded:    [1 1 1 1 1 1 1 1 1 1]
+\end{lstlisting}
+
+Για το \textbf{Semeval2017A}:
+\texttt{negative}~$\to 0$, \texttt{neutral}~$\to 1$, \texttt{positive}~$\to 2$.
+
+\subsection{Ζητούμενο 2 --- Λεκτική Ανάλυση (Tokenization)}
+
+Για τη λεκτική ανάλυση χρησιμοποιήθηκε ο \texttt{TweetTokenizer}, ο οποίος υπερτερεί του απλού διαχωρισμού βάσει κενού (\texttt{.split()}) καθώς αναγνωρίζει σύνθετες ενότητες όπως emoticons, hashtags και mentions ως ενιαία tokens. Η προσέγγιση αυτή είναι απαραίτητη για δεδομένα κοινωνικών δικτύων, όπου η στίξη και τα σύμβολα φέρουν έντονη συναισθηματική πληροφορία που θα χανόταν με έναν απλό διαχωρισμό. Στη συνέχεια, τα tokens μετατρέπονται σε αριθμητικούς δείκτες μέσω του λεξικού \texttt{word2idx}, με τις άγνωστες λέξεις να αντιστοιχίζονται στο token \texttt{<unk>}. Τέλος, εφαρμόζεται padding και truncation με βάση την παράμετρο \texttt{MAX\_SENTENCE\_LEN}, ώστε να διασφαλιστεί η σταθερή διάσταση των διανυσμάτων εισόδου για την εκπαίδευση του νευρωνικού δικτύου.
+
+\begin{lstlisting}
+# EX 2
+tokenizer = TweetTokenizer()
+self.data = [tokenizer.tokenize(sentence) for sentence in X]
+
+self.embedded_data = [
+    [word2idx.get(word, word2idx["<unk>"]) for word in sentence]
+    for sentence in self.data
+]
+
+self.max_length = MAX_SENTENCE_LEN
+self.embedded_data = [
+    (s + [0] * self.max_length)[: self.max_length] for s in self.embedded_data
+]
+\end{lstlisting}
+
+
+Τα δέκα πρώτα παραδείγματα μετά την επεξεργασία του \texttt{TweetTokenizer} εμφανίζονται παρακάτω:
+
+\begin{lstlisting}[language={}]
+=== EX2: Tokenization (first 10 sentences) ===
+[0] ['05', 'Beat', 'it', '-', 'Michael', 'Jackson', '-', 'Thriller', '(', '25th', 'Anniversary', 'Edition', ')', '[', 'HD', ']', 'http://t.co/A4K2B86PBv']
+[1] ['Jay', 'Z', 'joins', 'Instagram', 'with', 'nostalgic', 'tribute', 'to', 'Michael', 'Jackson', ':', 'Jay', 'Z', 'apparently', 'joined', 'Instagram', 'on', 'Saturday', 'and', '..', 'http://t.co/Qj9I4eCvXy']
+[2] ['Michael', 'Jackson', ':', 'Bad', '25th', 'Anniversary', 'Edition', '(', 'Picture', 'Vinyl', '):', 'This', 'unique', 'picture', 'disc', 'vinyl', 'includes', 'the', 'original', '1', 'http://t.co/fKXhToAAuW']
+[3] ['I', 'liked', 'a', '@YouTube', 'video', 'http://t.co/AaR3pjp2PI', 'One', 'Direction', 'singing', '"', 'Man', 'in', 'the', 'Mirror', '"', 'by', 'Michael', 'Jackson', 'in', 'Atlanta', ',', 'GA', '[', 'June', '26', ',']
+[4] ['18th', 'anniv', 'of', 'Princess', "Diana's", 'death', '.', 'I', 'still', 'want', 'to', 'believe', 'she', 'is', 'living', 'on', 'a', 'private', 'island', 'away', 'from', 'the', 'public', '.', 'With', 'Michael', 'Jackson', '.']
+[5] ['@oridaganjazz', 'The', '1st', 'time', 'I', 'heard', 'Michael', 'Jackson', 'sing', 'was', 'in', 'Honolulu', ',', 'Hawaii', '@', 'a', 'restaurant', 'on', 'radio', '.', 'It', 'was', 'A', '.', 'B', '.', 'C', '.', 'I', 'was', '13', '.', 'I', 'loved', 'it', '!']
+[6] ["'", 'Michael', 'Jackson', "'", 'appeared', 'on', 'Saturday', '29', 'at', 'the', '9th', 'place', 'in', 'the', 'Top', '20', 'of', "Miami's", 'Trends', ':', 'http://t.co/dXN2FWgUhb', '#trndnl']
+[7] ['Are', 'you', 'old', 'enough', 'to', 'remember', 'Michael', 'Jackson', 'attending', 'the', 'Grammys', 'with', 'Brooke', 'Shields', 'and', 'Webster', 'sat', 'on', 'his', 'lap', 'during', 'the', 'show', '?']
+[8] ['@etbowser', 'do', 'u', 'enjoy', 'his', '2nd', 'rate', 'Michael', 'Jackson', 'bit', '?', 'Honest', 'ques', '.', 'Like', 'the', "can't", 'feel', 'face', 'song', 'but', 'god', "it's", 'so', 'obvious', 'they', 'want', 'MJ', '2.0']
+[9] ['The', 'Weeknd', 'is', 'the', 'closest', 'thing', 'we', 'may', 'get', 'to', 'Michael', 'Jackson', 'for', 'a', 'long', 'time', '...', 'especially', 'since', 'he', 'damn', 'near', 'mimics', 'everything']
+\end{lstlisting}
+
+Ο κώδικας που εκτελεί την παραπάνω εκτύπωση είναι ο εξής:
+
+\begin{lstlisting}
+# EX 2
+print("\n=== EX2: Tokenization (first 10 sentences) ===")
+for i, tokens in enumerate(self.data[:10]):
+    print(f"[{i}] {tokens}")
+print()
+\end{lstlisting}
+
+Παρατηρούμε ότι ο διαχωρισμός πραγματοποιείται με επιτυχία, καθώς ο tokenizer απομονώνει σωστά τα σημεία στίξης (π.χ. παρενθέσεις στο παράδειγμα [0]) και διατηρεί αυτούσιους τους συνδέσμους URL και τα hashtags (π.χ. \texttt{'\#trndnl'} στο παράδειγμα [6]), στοιχεία που θα καταστρέφονταν με έναν απλό διαχωρισμό βάσει κενών.
+
+\subsection{Ζητούμενο 3 --- Υλοποίηση \texttt{\_\_getitem\_\_}}
+
+Η μέθοδος \texttt{\_\_getitem\_\_} αποτελεί τη γέφυρα μεταξύ της αποθηκευμένης πληροφορίας και της εισόδου του μοντέλου. Η επιστροφή του πραγματικού μήκους (\texttt{length}) είναι κρίσιμη καθώς επιτρέπει στο δίκτυο να αγνοεί τα μηδενικά στοιχεία του padding κατά τον υπολογισμό των κρυφών καταστάσεων, αποφεύγοντας τη διάχυση θορύβου στη μνήμη του μοντέλου.
+
+\begin{lstlisting}
+# EX3 -- Implementation of __getitem__
+def __getitem__(self, index):
+    example = torch.tensor(self.embedded_data[index], dtype=torch.long)
+    label = self.labels[index]
+    length = min(len(self.data[index]), self.max_length)
+    return example, label, length
+\end{lstlisting}
+
+Για την επαλήθευση της ορθότητας, εκτυπώνονται 5 παραδείγματα στην αρχική τους μορφή και ως αντικείμενα του \texttt{SentenceDataset}. Ο αντίστοιχος κώδικας που πετυχαίνει το παραπάνω βρίσκεται στην main.py και είναι ο εξής:
+
+\begin{lstlisting}
+for i in range(5):
+    raw_text = X_train[i]  
+    example, label, length = train_set[i]
+            
+    print(f"Example {i}:")
+    print(f"Raw sentence: {raw_text}")
+    print(f"Datasetreturns:")
+    print(f"example: {example.tolist()}")
+    print(f"label: {label}")
+    print(f"length: {length}")
+    print("-" * 30)
+\end{lstlisting}
+
+Οπτικοποίηση των παραδειγμάτων αυτών:
+
+\begin{lstlisting}[language={}]
+Example 0:
+  Raw sentence: the rock is destined to be the 21st century's new " conan " and that he's going to make a splash even greater than arnold schwarzenegger , jean-claud van damme or steven segal .
+  Dataset returns:
+    example: [1, 1187, 16, 10506, 5, 31, 1, 4747, 1291147, 51, 9, 20525, 9, 6, 13, 1291147, 227, 5, 166, 8, 17024, 157, 1441, 74, 5877, 6836, 2, 1291147, 1425, 44003, 47, 4374, 26293, 3, 0, 0, 0, 0, 0, 0]
+    label:   1
+    length:  34
+------------------------------
+Example 1:
+  Raw sentence: the gorgeously elaborate continuation of " the lord of the rings " trilogy is so huge that a column of words cannot adequately describe co-writer/director peter jackson's expanded vision of j . r . r . tolkien's middle-earth .
+  Dataset returns:
+    example: [1, 72548, 5090, 10042, 4, 9, 1, 2631, 4, 1, 6932, 9, 12572, 16, 99, 1361, 13, 8, 3216, 4, 1418, 1291147, 12288, 4611, 32164, 205, 365, 1314, 1291147, 2770, 3187, 4, 5924, 3, 1866, 3, 1866, 3, 1291147, 1291147]
+    label:   1
+    length:  40
+------------------------------
+Example 2:
+  Raw sentence: effective but too-tepid biopic
+  Dataset returns:
+    example: [2000, 35, 1291147, 31493, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    label:   1
+    length:  4
+------------------------------
+Example 3:
+  Raw sentence: if you sometimes like to go to the movies to have fun , wasabi is a good place to start .
+  Dataset returns:
+    example: [84, 81, 1126, 118, 5, 247, 5, 1, 2596, 5, 33, 2888, 2, 65642, 16, 8, 226, 234, 5, 473, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    label:   1
+    length:  21
+------------------------------
+Example 4:
+  Raw sentence: emerges as something rare , an issue movie that's so honest and keenly observed that it doesn't feel like one .
+  Dataset returns:
+    example: [13111, 20, 637, 2391, 2, 30, 505, 1055, 1291147, 99, 6000, 6, 23325, 4251, 13, 21, 1291147, 983, 118, 49, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    label:   1
+    length:  21
+------------------------------
+\end{lstlisting}
+
+
+\textbf{Θεωρητικός Σχολιασμός:} 
+Η μετατροπή σε \texttt{torch.long} είναι απαραίτητη καθώς οι δείκτες λέξεων χρησιμοποιούνται για το \textit{embedding lookup}, μια πράξη που απαιτεί ακέραιες τιμές. Το \textit{Zero-padding} διασφαλίζει ότι όλα τα δείγματα ενός batch έχουν τις ίδιες διαστάσεις, επιτρέποντας την παραλληλοποίηση των πράξεων.
+
+\subsection*{Σχολιασμός επί των Αποτελεσμάτων:} 
+\begin{itemize}
+    \item \textbf{Zero-Padding και Truncation:} Στο Παράδειγμα 2, η πρόταση έχει μόλις 4 tokens, οπότε συμπληρώνονται 36 μηδενικά στοιχεία για να φτάσει το \texttt{MAX\_SENTENCE\_LEN=40}. Αντίθετα, στο Παράδειγμα 1, η πρόταση φτάνει ακριβώς το όριο των 40 tokens, επιβεβαιώνοντας τη σταθερή διάσταση των εισόδων.
+    \item \textbf{Διαχείριση Αγνώστων Λέξεων (OOV):} Παρατηρείται συχνά ο δείκτης \texttt{1291147}. Αυτός αντιστοιχεί στο token \texttt{<unk>}, υποδεικνύοντας λέξεις που δεν υπήρχαν στο αρχείο των προ-εκπαιδευμένων embeddings (π.χ. εξειδικευμένα ονόματα ή σύνθετοι όροι όπως \textit{too-tepid}).
+    \item \textbf{Διαχωρισμός Length και Padding:} Το \texttt{length} (π.χ. 34 στο Παράδειγμα 0) αναπαριστά το πληροφοριακό περιεχόμενο της πρότασης, το οποίο θα χρησιμοποιηθεί από το μοντέλο για να αγνοήσει το padding κατά την εκπαίδευση.
+\end{itemize}
+
+
+%-----------------------------------------------------------------------
+\section{Μοντέλο}
+
+\subsection{Ζητούμενο 4 --- Embedding Layer}
+
+Το embedding layer αρχικοποιείται από τα προ-εκπαιδευμένα word
+embeddings και παγώνεται κατά την εκπαίδευση.
+
+\textbf{Γιατί αρχικοποιούμε από προ-εκπαιδευμένα embeddings;}
+Τα embeddings (π.χ.\ GloVe) εκπαιδεύονται σε δισεκατομμύρια tokens
+και κωδικοποιούν πλούσιες σημασιολογικές σχέσεις μεταξύ λέξεων.
+Αποτελούν ένα ποιοτικό σημείο εκκίνησης που θα ήταν αδύνατο να
+μάθουμε από τα μικρά sentiment datasets.
+
+\textbf{Γιατί παγώνουμε τα βάρη;}
+Το embedding layer περιέχει πολύ περισσότερες παραμέτρους από τον
+υπόλοιπο ταξινομητή. Η ενημέρωσή τους σε ένα μικρό dataset θα
+αλλοίωνε τη δομή του χώρου embeddings --- ουσιαστικά θα οδηγούσε
+σε overfitting.
+
+\section{Μοντέλο}
+
+\subsection{Ζητούμενο 4 - Embedding Layer}
+
+Σε αυτό το στάδιο, υλοποιούμε το Embedding Layer του δικτύου \texttt{BaselineDNN}, το οποίο αναλαμβάνει τη μετατροπή των αριθμητικών δεικτών των λέξεων σε συνεχή διανύσματα σημασιολογικής αναπαράστασης.
+
+\begin{lstlisting}
+# 1 - define the embedding layer
+self.embedding = nn.Embedding(len(embeddings), len(embeddings[0]))
+
+# 2 - initialize weights from pretrained word embeddings
+self.embedding.weight = nn.Parameter(torch.Tensor(embeddings))
+
+# 3 - freeze or finetune depending on trainable_emb
+self.embedding.weight.requires_grad = trainable_emb
+\end{lstlisting}
+
+\textbf{ Αρχικοποιούμε το επίπεδο με προ-εκπαιδευμένα embeddings}
+καθώς αυτά έχουν εκπαιδευτεί σε τεράστια  σύνολα δεδομένων και κωδικοποιούν πλούσιες σημασιολογικές και συντακτικές σχέσεις μεταξύ των λέξεων. Η αρχικοποίηση με τα διανύσματα αυτά προσφέρει στο μοντέλο ένα σημείο εκκίνησης υψηλής ποιότητας ("ξέρει" ήδη ότι η λέξη "υπέροχο" είναι κοντά στη λέξη "καλό" πριν καν δει το δικό μας dataset), το οποίο θα ήταν αδύνατο να μάθει αυτόνομα χρησιμοποιώντας μόνο τα συγκριτικά μικρά σύνολα δεδομένων συναισθήματος που διαθέτουμε. Αυτό επιταχύνει την εκπαίδευση και βελτιώνει την ακρίβεια.
+
+\textbf{Κρατάμε παγωμένα τα βάρη (freeze=True) του επιπέδου κατά την εκπαίδευση} κυρίως για να αποφύγουμε το overfitting. Αν το dataset μας είναι μικρό, η προσπάθεια να αλλάξουμε τα βάρη των embeddings μπορεί να καταστρέψει τις γενικές σημασιολογικές σχέσεις που ήδη υπάρχουν, προσαρμόζοντάς τες υπερβολικά στις ιδιαιτερότητες του συγκεκριμένου dataset. Επίσης, μειώνεται ο αριθμός των παραμέτρων που πρέπει να εκπαιδευτούν, κάνοντας τη διαδικασία πιο γρήγορη και λιγότερο απαιτητική σε πόρους.
+
+\subsection{Ζητούμενο 5 - Output Layers}
+
+Σε αυτό το σημείο, ορίζουμε την αρχιτεκτονική της ταξινόμησης, χρησιμοποιώντας ένα ενδιάμεσο κρυφό επίπεδο με μη γραμμική ενεργοποίηση για την εξαγωγή πιο σύνθετων χαρακτηριστικών πριν την τελική προβολή στις κλάσεις εξόδου.
+
+\begin{lstlisting}
+hidden_size = 1024
+self.fc1 = nn.Linear(emb_dim, hidden_size)
+self.ac1 = nn.ReLU()
+self.output_layer = nn.Linear(hidden_size, output_size)
+\end{lstlisting}
+
+
+\textbf{Η σύνθεση γραμμικών μετασχηματισμών είναι και αυτή ένας γραμμικός μετασχηματισμός}:
+$ \mathbf{y} = A_2\,(A_1\,\mathbf{x}) = (A_2 A_1)\,\mathbf{x} $.
+Το γινόμενο $A_2 A_1$ αποτελεί έναν ενιαίο πίνακα, επομένως όσα γραμμικά επίπεδα και αν συνδέσουμε στη σειρά, το σύνολο των συναρτήσεων που μπορεί να αναπαραστήσει το μοντέλο παραμένει το ίδιο σύνολο γραμμικών συναρτήσεων — το ίδιο δηλαδή αν είχαμε ένα μόνο μοναδικό γραμμικό επίπεδο με λιγότερες παραμέτρους. Το βέλτιστο επιτεύξιμο σφάλμα παραμένει το ίδιο, καθώς προσθέτουμε πλεονάζουσες παραμέτρους χωρίς να επεκτείνουμε την εκφραστική ισχύ του μοντέλου.
+
+\textbf{Η εισαγωγή μιας μη γραμμικής ενεργοποίησης, όπως η ReLU, ανάμεσα στα επίπεδα καθιστά το δίκτυο ικανό πλέον να αναπαραστήσει μη γραμμικά όρια απόφασης}, διευρύνοντας σημαντικά την εκφραστικότητά του και επιτρέποντας (πιθανώς) την επίτευξη χαμηλότερου σφάλματος κατά την εκπαίδευση. Χωρίς αυτήν, το δίκτυο θα μπορούσε να μοντελοποιήσει μόνο απλές, γραμμικές τάσεις, κάτι που δεν αρκεί για να κατανοήσει τη σημασιολογία της γλώσσας (π.χ. ειρωνεία ή σύνθετα νοήματα)
+
+\subsection{Ζητούμενο 6 --- Forward Pass}
+
+Το forward pass εκτελεί τα εξής βήματα:
+\begin{align}
+    E &= \text{embed}(x) && \text{(}B \times T \times d\text{)} \label{eq:embed}\\
+    u &= \frac{1}{N}\sum_{i=1}^{N} e_i && \text{μέσος όρος embeddings} \label{eq:mean}\\
+    r &= \text{ReLU}(Wu + b) && \text{μη-γραμμικός μετασχηματισμός} \label{eq:relu}\\
+    \hat{y} &= W_o r + b_o && \text{προβολή στις κλάσεις} \label{eq:proj}
+\end{align}
+
+\textbf{Διαισθητική ερμηνεία του κέντρου βάρους.}
+Αν κάθε διάσταση του embedding χώρου αντιστοιχεί σε μια αφηρημένη
+σημασιολογική ιδιότητα, τότε το κέντρο βάρους εκφράζει το ``μέσο
+σημασιολογικό προφίλ'' της πρότασης. Για παράδειγμα, αν μια
+διάσταση συσχετίζεται με \emph{ένταση συναισθήματος}, η πρόταση
+``a thrilling, breathtaking masterpiece'' θα έχει υψηλή τιμή
+σε αυτή τη διάσταση.
+
+\textbf{Αδυναμίες:}
+\begin{itemize}
+    \item \textbf{Απώλεια σειράς λέξεων.} Το κέντρο βάρους είναι
+    αναλλοίωτο σε αναδιατάξεις: ``not expensive'' και ``expensive not''
+    δίνουν ίδια αναπαράσταση. Η άρνηση (negation) χάνεται.
+    \item \textbf{Αγνόηση πλαισίου.} Κάθε λέξη λαμβάνει σταθερό
+    embedding ανεξάρτητα από τα συμφραζόμενα --- πολυσημία όπως
+    ``bank'' (ποτάμι vs.\ τράπεζα) δεν αποσαφηνίζεται.
+\end{itemize}
+
+
+\subsection{Ζητούμενο 6 - Forward Pass}
+
+Σε αυτό το τελικό στάδιο του μοντέλου, ορίζουμε τη ροή των δεδομένων μέσα από το μοντέλο μας, υλοποιώντας τον υπολογισμό της διανυσματικής αναπαράστασης της πρότασης μέσω του μέσου όρου των embeddings, εξαιρώντας τα στοιχεία που προέκυψαν από padding.
+
+\begin{lstlisting}
+# 1 - embed the words
+embeddings = self.embedding(x)
+
+# 2 - mean of word embeddings (excluding padding)
+representations = torch.sum(embeddings, dim=1) \
+                  / lengths.unsqueeze(1).float()
+
+# 3 - non-linear transformation
+representations = self.ac1(self.fc1(representations))
+
+# 4 - project to classes
+logits = self.output_layer(representations)
+\end{lstlisting}
+
+Προσπαθώντας να δώσουμε μια διαισθητική ερμηνεία της αναπαράστασης αυτής, μπορούμε να πούμε ότι κάθε διάσταση του embedding space συλλαμβάνει μια αφηρημένη σημασιολογική ιδιότητα, επομένως ο μέσος όρος όλων των word embeddings σε μια πρόταση αντιπροσωπεύει το μέσο σημασιολογικό αναγνωριστικό/αποτύπωμα αυτής της πρότασης σε κάθε τέτοια διάσταση.
+Για παράδειγμα, έστω ότι μια διάσταση συσχετίζεται με την \emph{ένταση του συναισθήματος}. Στην πρόταση \emph{«ένα συναρπαστικό, εκπληκτικό αριστούργημα»}, οι λέξεις \emph{συναρπαστικό}, \emph{εκπληκτικό} και \emph{αριστούργημα} προβάλλονται έντονα σε αυτόν τον άξονα, επομένως το κέντρο βάρους κληρονομεί μια υψηλή τιμή σε αυτή τη διάσταση — αποτυπώνοντας ότι η πρόταση ως σύνολο εκφράζει ισχυρό θετικό συναίσθημα.
+
+\textbf{Αδυναμίες της προσέγγισης του κέντρου βάρους.}
+
+\begin{itemize}
+    \item \textbf{Απώλεια της σειράς των λέξεων.} Η προσέγγιση αυτή αντιμετωπίζει το κείμενο ως Bag-of-Words. "Η ταινία δεν ήταν καλή, ήταν κακή" και "Η ταινία δεν ήταν κακή, ήταν καλή" θα έχουν σχεδόν τον ίδιο μέσο όρο, παρόλο που έχουν αντίθετο νόημα. Το κέντρο βάρους είναι δηλαδή αμετάβλητο σε μεταθέσεις των λέξεων εισόδου. 
+
+     \item \textbf{Αδυναμία χειρισμού άρνησης.} Κρίσιμο είναι ότι οι λέξεις άρνησης, όπως το "δεν" ή το "όχι", είναι συχνά σχεδόν ορθογώνιες προς την ιδιότητα της λέξης που αρνούνται. Εξετάζοντας την φράση "η ταινία ήταν ακριβή" έναντι του "η ταινία δεν ήταν ακριβή", η λέξη δεν πιθανώς έχει σχεδόν μηδενική προβολή σε μια διάσταση κόστους, οπότε τα κέντρα βάρους των δύο προτάσεων καταλήγουν πολύ κοντά μεταξύ τους, παρά το γεγονός ότι φέρουν αντίθετα νοήματα.
+
+    \item \textbf{Το context αγνοείται.} Κάθε λέξη λαμβάνει το ίδιο embedding ανεξάρτητα από το περιβάλλον της. Η λέξη "ακραία" παίρνει το ίδιο διάνυσμα είτε εμφανίζεται ως "ακραία καλό" είτε ως "ακραία κακό".
+    
+    \item \textbf{Ίση βαρύτητα σε όλες τις λέξεις.} Λέξεις χωρίς ιδιαίτερο νόημα (όπως "the", "is", "a") επηρεάζουν τον μέσο όρο εξίσου με λέξεις-κλειδιά (π.χ. "αριστούργημα", "αποτυχία"), θολώνοντας την τελική αναπαράσταση.
+
+    \item \textbf{Αδυναμία διαχείρισης της Πολυσημίας.} Κάθε λέξη μπορεί να λαμβάνει διαφορετικά νοήματα ανάλογα με την πρόθεση του συντάκτη. Για παράδειγμα η λέξη "γλώσσα" μπορεί να αναφέρεται στο βιολογικό όργανο του ανθρώπου ή στο εργαλείο επικοινωνίας των ανρθώπων. Σε κάθε περίπτωση η αναπαράσταση θα είναι ίδια.
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\section{Εκπαίδευση}
+
+\subsection{Ζητούμενο 7 - DataLoaders}
+
+Σε αυτό το στάδιο, οργανώνουμε τα δεδομένα σε mini-batches χρησιμοποιώντας την κλάση \texttt{DataLoader}, η οποία διαχειρίζεται την αποτελεσματική τροφοδοσία του μοντέλου και την ανακάτεμα των παραδειγμάτων.
+
+\begin{lstlisting}
+train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=True)
+test_loader  = DataLoader(test_set,  batch_size=BATCH_SIZE)
+\end{lstlisting}
+
+\subsection*{Μικρά vs Μεγάλα mini-batches}
+
+Το σφάλμα ανά batch $L_B = \frac{1}{|B|}\sum_{i \in B} \ell_i(\theta)$ είναι ένας δειγματικός μέσος όρος επί ανεξάρτητων και ισόνομων δειγμάτων, επομένως η διακύμανσή του είναι:
+\[
+    \mathrm{Var}(L_B) = \frac{\sigma_\ell^2}{|B|}
+\]
+όπου $\sigma_\ell^2$ είναι η διακύμανση του σφάλματος ανά δείγμα. Αυτή η διακύμανση αποτελεί ένδειξη της τραχύτητας της καμπύλης σφάλματος, με υψηλότερη διακύμανση να σημαίνει μεγαλύτερες διακυμάνσεις στο αναφερόμενο σφάλμα από batch σε batch. Καθώς αυτή μειώνεται με το μέγεθος $|B|$, εξηγείται γιατί:
+
+\begin{itemize}
+    \item \textbf{Τα μικρά batches} έχουν υψηλό $\mathrm{Var}(L_B)$, επομένως η καμπύλη σφάλματος εμφανίζεται τραχιά. Ωστόσο, προσφέρουν περισσότερες ενημερώσεις βαρών ανά εποχή και ο θόρυβος των κλίσεων εμποδίζει το μοντέλο από το να παγιδευτεί σε απότομα τοπικά ελάχιστα, μειώνοντας την υπερπροσαρμογή.
+
+    \item \textbf{Τα μεγάλα batches} έχουν χαμηλό $\mathrm{Var}(L_B)$, οδηγώντας σε μια ομαλή καμπύλη σφάλματος και πιο προβλέψιμη σύγκλιση. Το μειονέκτημα είναι οι λιγότερες ενημερώσεις ανά εποχή και η τάση σύγκλισης σε πιο απότομα ελάχιστα, τα οποία ενδέχεται να έχουν χειρότερη γενίκευση.
+\end{itemize}
+
+\subsection*{Shuffle mini-batches}
+
+Χωρίς shuffle, τα δεδομένα ενδεχομένως να είχαν μια συγκεκριμένη σειρά (π.χ. όλα τα θετικά σχόλια στην αρχή και όλα τα αρνητικά στο τέλος), το μοντέλο θα μάθαινε αυτή τη σειρά αντί για το πραγματικό νόημα των λέξεων. Αυτό εισάγει bias καθώς οι ενημερώσεις των βαρών στο τέλος κάθε εποχής θα καθοδηγούνταν συστηματικά από το ίδιο υποσύνολο παραδειγμάτων, στρέφοντας το μοντέλο προς τα μοτίβα αυτού του υποσυνόλου. Για παράδειγμα, αν τα τελευταία batches περιείχαν κυρίως αρνητικές κριτικές, οι τελικές ενημερώσεις κάθε εποχής θα ωθούσαν το μοντέλο προς την πρόβλεψη του αρνητικού. Το ανακάτεμα σπάει αυτή τη σταθερή σειρά, διασφαλίζει διαφορετικές συνθέσεις batches σε κάθε εποχή και καθιστά τις εκτιμήσεις των κλίσεων πιο αντιπροσωπευτικές του πλήρους συνόλου δεδομένων κατά τη διάρκεια της εκπαίδευσης. Το μοντέλο ωθείται να μάθει πιο robust χαρακτηριστικά και εμποδίζεται από την απομνημόνευση της σειράς των παραδειγμάτων.
+
+\section{Εκπαίδευση}
+
+\subsection{Ζητούμενο 7 --- DataLoaders}
+
+\textbf{Μέγεθος mini-batch.}
+Η διακύμανση του σφάλματος ανά batch είναι
+$\mathrm{Var}(L_B) = \sigma_\ell^2 / |B|$,
+όπου $\sigma_\ell^2$ η διακύμανση ανά δείγμα.
+Μικρά batches δίνουν θορυβώδεις ενημερώσεις
+(ρυθμιστικό αποτέλεσμα, λιγότερο overfitting),
+ενώ μεγάλα batches σταθερή σύγκλιση αλλά τάση
+συγκέντρωσης σε ``αιχμηρά'' ελάχιστα.
+
+\textbf{Γιατί ανακατεύουμε (shuffle);}
+Χωρίς ανακάτεμα, τα ίδια δείγματα σχηματίζουν πάντα τα ίδια batches
+και εμφανίζονται στην ίδια σειρά, εισάγοντας σειριακή μεροληψία.
+Η ανακατανομή εξασφαλίζει πιο αντιπροσωπευτικές εκτιμήσεις gradient
+ανά εποχή.
+
+\subsection{Ζητούμενο 8 --- Συνάρτηση Σφάλματος, Παράμετροι, Optimizer}
+
+\begin{itemize}
+    \item \textbf{Loss:} Για δυαδική κατηγοριοποίηση (MR) χρησιμοποιούμε
+    \texttt{BCEWithLogitsLoss} (ένα logit, sigmoid + BCE). Για τρεις
+    κλάσεις (Semeval2017A) χρησιμοποιούμε \texttt{CrossEntropyLoss}
+    (softmax + NLL).
+    \item \textbf{Παράμετροι:} Μόνο οι παράμετροι με
+    \texttt{requires\_grad=True} περνούν στον optimizer ---
+    τα παγωμένα embeddings εξαιρούνται.
+    \item \textbf{Optimizer:} Adam (adaptive learning rate ανά
+    παράμετρο μέσω running moments).
+\end{itemize}
+
+\subsection{Ζητούμενο 9 --- Βρόχοι Εκπαίδευσης και Αξιολόγησης}
+
+Η \texttt{train\_dataset} εκτελεί forward pass, υπολογίζει το loss,
+κάνει backpropagation και ενημερώνει τα βάρη (SGD step).
+Η \texttt{eval\_dataset} αξιολογεί χωρίς gradient, υπολογίζοντας
+τις προβλέψεις: threshold στο μηδέν (sign of logit) για BCEWithLogitsLoss
+ή $\arg\max$ για CrossEntropyLoss.
+
+%-----------------------------------------------------------------------
+\section{Αξιολόγηση}
+
+\subsection{Ζητούμενο 10 --- Μετρικές και Καμπύλες Εκπαίδευσης}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/loss_baseline.png}
+\caption{Καμπύλες εκπαίδευσης του Baseline DNN (mean pooling) στο MR (αριστερά) και Semeval2017A (δεξιά).}
+\end{figure}
+
+\lstinputlisting[language={}, firstline=21, lastline=32]{results/baseline_results.txt}
+
+Το μοντέλο επιτυγχάνει $\sim$70\% F1 στο MR και $\sim$53\% στο Semeval2017A.
+Η χαμηλότερη επίδοση στο Semeval εξηγείται τόσο από την τρίτη (neutral)
+κλάση όσο και από τη θορυβώδη φύση των tweets.
+
+\subsection{Ζητούμενο 11 --- Κατηγοριοποίηση με LLM (ChatGPT)}
+
+Δοκιμάσαμε το ChatGPT (GPT-4) σε zero-shot κατηγοριοποίηση
+συναισθήματος, χρησιμοποιώντας κατάλληλα prompts.
+
+\subsubsection*{MR Dataset}
+
+Επιλέχθηκαν 40 κριτικές ταινιών (20 θετικές, 20 αρνητικές).
+Στο prompt ανατέθηκε ο ρόλος ``expert movie critic and sentiment
+analyzer'' και ζητήθηκε ταξινόμηση σε Positive/Negative.
+
+\textbf{Αποτέλεσμα: Accuracy $= 1.0$ (40/40 σωστά).}
+
+Σε δεύτερο prompt ζητήθηκε ανάλυση 6 αντιπροσωπευτικών
+παραδειγμάτων (3 εύκολα, 3 δύσκολα):
+\begin{itemize}
+    \item \textit{Εύκολα:} Λέξεις-κλειδιά όπως ``masterpiece'' ή
+    η τριπλή επανάληψη ``bad'' δίνουν ξεκάθαρο σήμα.
+    \item \textit{Δύσκολα:} Αντιθετικές δομές (``interesting, but
+    not compelling'') απαιτούν κατανόηση ότι ο σύνδεσμος ``but''
+    μετατοπίζει το βάρος στο δεύτερο σκέλος. Το μοντέλο τα
+    χειρίστηκε σωστά, αποδεικνύοντας βαθιά κατανόηση
+    συντακτικής δομής.
+\end{itemize}
+
+\subsubsection*{Semeval2017A Dataset}
+
+Επιλέχθηκαν 60 tweets (20 ανά κατηγορία).
+Στο prompt ανατέθηκε ο ρόλος ``expert social media sentiment
+analyzer'' και ζητήθηκε ταξινόμηση σε Positive/Negative/Neutral.
+
+\textbf{Αποτέλεσμα: Accuracy $= 1.0$ (60/60 σωστά).}
+
+Η πιο δύσκολη κατηγορία ήταν η \textbf{Neutral}, επειδή πολλά
+tweets κρύβουν έμμεσο συναίσθημα. Π.χ.\ ``Checking out the new
+coffee shop downtown'' θα μπορούσε να θεωρηθεί θετικό (προσμονή),
+αλλά η απουσία ρητών επιθέτων οδήγησε σωστά σε Neutral.
+
+\subsubsection*{Συμπέρασμα}
+
+Σε αντίθεση με τα μοντέλα βασισμένα σε static embeddings, τα
+LLMs δεν λειτουργούν ως ``bag-of-words'' ταξινομητές:
+αντιλαμβάνονται σαρκασμό (``Thanks for nothing''), αντιθέσεις
+(``but'', ``even though''), και εντοπίζουν ότι intensity modifiers
+(``just plain bad'') ενισχύουν το συναίσθημα. Αυτό αποδίδεται
+στα contextualized embeddings και στην εκπαίδευση σε τεράστιο
+όγκο δεδομένων.
+
+
+\end{document}
