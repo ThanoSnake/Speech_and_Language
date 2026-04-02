@@ -4,3 +4,4 @@ embeddings/*.txt
 embeddings/*.p
 models/
 __pycache__/
+output/
