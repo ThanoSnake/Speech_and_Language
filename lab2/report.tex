@@ -9,6 +9,8 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{float}
+\usepackage[unicode]{hyperref}
 
 \lstset{
     language=Python,
@@ -20,7 +22,7 @@
     breaklines=true,
 }
 
-\title{SLP Lab 3 --- Sentiment Analysis Report\\[0.3em]\large Προπαρασκευή \& Κυρίως Εργαστήριο}
+\title{SLP Lab 2 --- Sentiment Analysis Report\\[0.3em]\large Προπαρασκευή \& Κυρίως Εργαστήριο}
 \author{}
 \date{}
 
@@ -30,392 +32,208 @@
 \part{Προπαρασκευή}
 
 %-----------------------------------------------------------------------
-\section{Data Loading and Preprocessing}
+\section{Φόρτωση και Προεπεξεργασία Δεδομένων}
 
-\subsection{EX1 --- Label Encoding}
+\subsection{Ζητούμενο 1 --- Κωδικοποίηση Επισημειώσεων}
 
-String labels are converted to integer indices using \texttt{sklearn}'s
-\texttt{LabelEncoder}, which sorts the unique labels alphabetically and
-assigns each a zero-based integer.
+Οι επισημειώσεις (labels) κωδικοποιούνται σε ακέραιους μέσω του
+\texttt{LabelEncoder} του scikit-learn. Για το \textbf{MR}
+dataset (δυαδική κατηγοριοποίηση):
+\texttt{negative}~$\to 0$, \texttt{positive}~$\to 1$.
+Για το \textbf{Semeval2017A} (τρεις κλάσεις):
+\texttt{negative}~$\to 0$, \texttt{neutral}~$\to 1$, \texttt{positive}~$\to 2$.
 
-\begin{lstlisting}
-le = LabelEncoder()
-le.fit(y_train)
-y_train = le.transform(y_train)
-y_test  = le.transform(y_test)
-n_classes = le.classes_.size
-\end{lstlisting}
+Η αλφαβητική ταξινόμηση εγγυάται ότι η αντιστοίχιση είναι ντετερμινιστική
+και ίδια μεταξύ training και test set.
 
-For the \textbf{MR} dataset the mapping is:
+\subsection{Ζητούμενο 2 --- Λεκτική Ανάλυση (Tokenization)}
 
-\begin{center}
-\begin{tabular}{lc}
-\toprule
-Label & Index \\
-\midrule
-negative & 0 \\
-positive & 1 \\
-\bottomrule
-\end{tabular}
-\end{center}
+Κάθε πρόταση μετατρέπεται σε ακολουθία tokens μέσω του
+\texttt{TweetTokenizer} της βιβλιοθήκης NLTK, ο οποίος χειρίζεται
+σωστά στοιχεία κοινωνικών δικτύων (hashtags, mentions, emoticons).
+Κάθε token αντιστοιχίζεται στον ακέραιο δείκτη του στο λεξιλόγιο
+των embeddings· οι λέξεις εκτός λεξιλογίου (OOV) αντιστοιχίζονται
+στο token \texttt{$<$unk$>$}.
 
-Sample output on the MR training set:
+\subsection{Ζητούμενο 3 --- \texttt{\_\_getitem\_\_}}
 
-\begin{lstlisting}[language={}]
-First 10 raw labels:
-['positive', 'positive', ..., 'positive']
-
-First 10 encoded:
-[1 1 1 1 1 1 1 1 1 1]
-\end{lstlisting}
-
-For \textbf{Semeval2017A} the encoder produces three classes:
-\texttt{negative} $\to$ 0, \texttt{neutral} $\to$ 1, \texttt{positive} $\to$ 2.
-
-\subsection{EX2 --- \texttt{SentenceDataset.\_\_init\_\_}}
-
-The dataset constructor tokenizes each raw sentence using NLTK's
-\texttt{TweetTokenizer} (chosen for its handling of Twitter-specific tokens
-such as hashtags, mentions, and emoticons) and maps each token to its index
-in the pre-trained embedding vocabulary.
-Out-of-vocabulary words are mapped to the \texttt{<unk>} token, which is
-added to \texttt{word2idx} with a random vector by \texttt{load\_word\_vectors}
-if not already present in the embeddings file.
-
-\begin{lstlisting}
-tokenizer = TweetTokenizer()
-self.data = [tokenizer.tokenize(sentence) for sentence in X]
-self.embedded_data = [
-    [word2idx.get(word, word2idx["<unk>"]) for word in sentence]
-    for sentence in self.data
-]
-self.labels = y
-self.word2idx = word2idx
-\end{lstlisting}
-
-\subsection{EX3 --- \texttt{SentenceDataset.\_\_getitem\_\_}}
-
-The \texttt{\_\_getitem\_\_} method returns a tuple of three values for a given index:
-
+Η μέθοδος \texttt{\_\_getitem\_\_} επιστρέφει τρία στοιχεία:
 \begin{enumerate}
-    \item \textbf{example} --- the padded/truncated sequence of word indices
-    \item \textbf{label} --- the integer class label
-    \item \textbf{length} --- the real number of tokens, excluding zero-padding
+    \item την κωδικοποιημένη ακολουθία δεικτών λέξεων (με zero-padding ή truncation στο \texttt{max\_length}~$=40$),
+    \item την ακέραια ετικέτα κλάσης,
+    \item το πραγματικό μήκος της πρότασης (εξαιρώντας τα μηδενικά padding).
 \end{enumerate}
-
-\begin{lstlisting}
-def __getitem__(self, index):
-    embeddings = self.embedded_data[index]
-    length = min(len(self.data[index]), self.max_length)
-    label = self.labels[index]
-    return embeddings, label, length
-\end{lstlisting}
-
-The \texttt{max\_length} was set to \textbf{40} after inspecting the sentence length
-distribution in the training set. Sentences shorter than 40 tokens are zero-padded;
-longer sentences are truncated.
-
-The \texttt{length} is capped at \texttt{max\_length} because sentences that exceed
-it are truncated in \texttt{embedded\_data} --- returning the pre-truncation token
-count would be inconsistent with the actual stored sequence.
-
-Each example passes through three stages of processing, shown below for 3
-representative samples from the MR training set (max\_length = 40):
-
-\begin{lstlisting}[language={}]
-[0] Original  : the rock is destined to be the 21st century's new " conan "
-                and that he's going to make a splash even greater than arnold
-                schwarzenegger , jean-claud van damme or steven segal .
-[0] Tokenized : ['the', 'rock', 'is', 'destined', ..., 'segal', '.']
-[0] Encoded   : [14, 1287, 33, 37524, 17, 57, 14, ..., 0, 0, 0, 0, 0, 0]
-[0] Label     : 1 (positive) | Real length: 34
-
-[2] Original  : effective but too-tepid biopic
-[2] Tokenized : ['effective', 'but', 'too-tepid', 'biopic']
-[2] Encoded   : [11739, 80, 1193515, 120123, 0, 0, ..., 0]
-[2] Label     : 1 (positive) | Real length: 4
-
-[3] Original  : if you sometimes like to go to the movies to have fun ,
-                wasabi is a good place to start .
-[3] Tokenized : ['if', 'you', 'sometimes', 'like', ..., 'start', '.']
-[3] Encoded   : [75, 16, 693, 64, 17, 112, ..., 0, 0, 0, 0, 0]
-[3] Label     : 1 (positive) | Real length: 21
-\end{lstlisting}
-
-Index \texttt{1193515} corresponds to the \texttt{<unk>} token, which appears
-for out-of-vocabulary words such as \emph{too-tepid} and \emph{co-writer/director}.
+Το \texttt{max\_length} επιλέχθηκε ώστε να καλύπτει την πλειοψηφία
+των μηκών πρότασης στα training sets.
 
 %-----------------------------------------------------------------------
-\section{Model}
+\section{Μοντέλο}
 
-\subsection{EX4 --- Embedding Layer}
+\subsection{Ζητούμενο 4 --- Embedding Layer}
 
-\begin{lstlisting}
-# 1 - define the embedding layer
-self.embedding = nn.Embedding(len(embeddings), len(embeddings[0]))
+Το embedding layer αρχικοποιείται από τα προ-εκπαιδευμένα word
+embeddings και παγώνεται κατά την εκπαίδευση.
 
-# 2 - initialize weights from pretrained word embeddings
-self.embedding.weight = nn.Parameter(torch.Tensor(embeddings))
+\textbf{Γιατί αρχικοποιούμε από προ-εκπαιδευμένα embeddings;}
+Τα embeddings (π.χ.\ GloVe) εκπαιδεύονται σε δισεκατομμύρια tokens
+και κωδικοποιούν πλούσιες σημασιολογικές σχέσεις μεταξύ λέξεων.
+Αποτελούν ένα ποιοτικό σημείο εκκίνησης που θα ήταν αδύνατο να
+μάθουμε από τα μικρά sentiment datasets.
 
-# 3 - freeze or finetune depending on trainable_emb
-self.embedding.weight.requires_grad = trainable_emb
-\end{lstlisting}
+\textbf{Γιατί παγώνουμε τα βάρη;}
+Το embedding layer περιέχει πολύ περισσότερες παραμέτρους από τον
+υπόλοιπο ταξινομητή. Η ενημέρωσή τους σε ένα μικρό dataset θα
+αλλοίωνε τη δομή του χώρου embeddings --- ουσιαστικά θα οδηγούσε
+σε overfitting.
 
-\textbf{Why initialize from pre-trained embeddings?}
-Pre-trained word embeddings such as GloVe are trained on massive corpora (billions of tokens)
-and encode rich semantic and syntactic relationships between words. Initializing
-the embedding layer with these vectors gives the model a high-quality starting point
-that would be impossible to learn from our comparatively small sentiment datasets alone.
+\subsection{Ζητούμενο 5 --- Output Layers}
 
-\textbf{Why freeze the embedding layer during training?}
-The pre-trained embeddings already form a well-structured, expressive vector space in which
-semantically related words lie close together. The embedding layer contains far more
-parameters than the rest of the classifier, and our sentiment datasets are comparatively
-small. Allowing gradients to update these parameters risks distorting the global structure
-of the embedding space to fit the idiosyncrasies of the training set---in other words,
-overfitting. The small task-specific dataset simply does not carry enough information to
-justify re-tuning hundreds of thousands of embedding parameters, and doing so is likely to
-degrade the quality of the representations rather than improve them.
+Πριν το τελικό γραμμικό layer τοποθετείται ένας μη-γραμμικός
+μετασχηματισμός (ReLU).
 
-\subsection{EX5 --- Output Layers}
+\textbf{Γιατί απαιτείται μη-γραμμικότητα;}
+Η σύνθεση γραμμικών μετασχηματισμών παραμένει γραμμική:
+$\mathbf{y} = W_2(W_1\mathbf{x}) = (W_2 W_1)\mathbf{x}$.
+Ανεξαρτήτως πλήθους layers, η κλάση αναπαραστάσιμων συναρτήσεων
+$\mathcal{H}$ παραμένει η ίδια --- αυτή των αφφινικών απεικονίσεων.
+Η εισαγωγή μιας μη-γραμμικής ενεργοποίησης (π.χ.\ ReLU) σπάει
+αυτή την ισοδυναμία, επιτρέποντας μη-γραμμικά όρια απόφασης και
+αυξάνοντας την εκφραστική δύναμη του μοντέλου.
 
-\begin{lstlisting}
-hidden_size = 1024
-self.fc1 = nn.Linear(emb_dim, hidden_size)
-self.ac1 = nn.ReLU()
-self.output_layer = nn.Linear(hidden_size, output_size)
-\end{lstlisting}
+\subsection{Ζητούμενο 6 --- Forward Pass}
 
-\textbf{Why do we place a non-linear activation before the output layer?
-What would change if we stacked two or more linear transformations in sequence?}
+Το forward pass εκτελεί τα εξής βήματα:
+\begin{align}
+    E &= \text{embed}(x) && \text{(}B \times T \times d\text{)} \label{eq:embed}\\
+    u &= \frac{1}{N}\sum_{i=1}^{N} e_i && \text{μέσος όρος embeddings} \label{eq:mean}\\
+    r &= \text{ReLU}(Wu + b) && \text{μη-γραμμικός μετασχηματισμός} \label{eq:relu}\\
+    \hat{y} &= W_o r + b_o && \text{προβολή στις κλάσεις} \label{eq:proj}
+\end{align}
 
-A composition of linear transformations is itself linear:
-$\mathbf{y} = W_2\,(W_1\,\mathbf{x}) = (W_2 W_1)\,\mathbf{x}$.
-The product $W_2 W_1$ is a single matrix, so no matter how many linear layers we chain
-together, the set of representable functions $\mathcal{H}$ remains the set of all affine
-maps---the same as a single linear layer with fewer parameters. The optimal achievable
-loss $L^{*} = \min_{f \in \mathcal{H}} \|f - f^{*}\|$ therefore stays the same; we only
-add redundant parameters without expanding the model's expressive power.
+\textbf{Διαισθητική ερμηνεία του κέντρου βάρους.}
+Αν κάθε διάσταση του embedding χώρου αντιστοιχεί σε μια αφηρημένη
+σημασιολογική ιδιότητα, τότε το κέντρο βάρους εκφράζει το ``μέσο
+σημασιολογικό προφίλ'' της πρότασης. Για παράδειγμα, αν μια
+διάσταση συσχετίζεται με \emph{ένταση συναισθήματος}, η πρόταση
+``a thrilling, breathtaking masterpiece'' θα έχει υψηλή τιμή
+σε αυτή τη διάσταση.
 
-Inserting a non-linear activation such as ReLU between the layers breaks this equivalence.
-The resulting network can represent non-linear decision boundaries, strictly enlarging
-$\mathcal{H}$ and potentially lowering $L^{*}$.
-
-\subsection{EX6 --- Forward Pass}
-
-\begin{lstlisting}
-# 1 - embed the words
-embeddings = self.embedding(x)
-
-# 2 - mean of word embeddings (excluding padding)
-representations = torch.sum(embeddings, dim=1) \
-                  / lengths.unsqueeze(1).float()
-
-# 3 - non-linear transformation
-representations = self.ac1(self.fc1(representations))
-
-# 4 - project to classes
-logits = self.output_layer(representations)
-\end{lstlisting}
-
-\textbf{Intuitive interpretation of the centroid representation.}
-If we assume that each dimension of the embedding space captures an abstract semantic
-property, then the centroid (mean) of all word embeddings in a sentence represents the
-``average semantic profile'' of that sentence along every such dimension.
-For example, suppose one dimension correlates with \emph{sentiment intensity}. In the
-sentence \emph{``a thrilling, breathtaking masterpiece''}, the words \emph{thrilling},
-\emph{breathtaking}, and \emph{masterpiece} all project strongly onto this axis, so the
-centroid inherits a high value on that dimension---capturing that the sentence as a whole
-expresses strong positive sentiment.
-
-\textbf{Weaknesses of the centroid approach.}
-
+\textbf{Αδυναμίες:}
 \begin{itemize}
-    \item \textbf{Word order is lost.} The centroid is invariant to permutations of the
-    input words: \emph{``the movie was not expensive''} and \emph{``expensive was not the
-    movie''} yield identical representations. More critically, negation words such as
-    \emph{not} are often nearly orthogonal to the property they negate. Consider
-    \emph{``the movie was expensive''} vs.\ \emph{``the movie was not expensive''}:
-    the word \emph{not} likely has a near-zero projection onto a ``cost'' dimension,
-    so the centroids of the two sentences land very close together despite carrying
-    opposite meanings.
-
-    \item \textbf{Context is ignored.} Each word receives the same embedding regardless of
-    its surrounding context. The word \emph{bank} gets the same vector whether it appears
-    in \emph{``river bank''} or \emph{``bank account''}---the centroid has no mechanism to
-    disambiguate polysemous words.
+    \item \textbf{Απώλεια σειράς λέξεων.} Το κέντρο βάρους είναι
+    αναλλοίωτο σε αναδιατάξεις: ``not expensive'' και ``expensive not''
+    δίνουν ίδια αναπαράσταση. Η άρνηση (negation) χάνεται.
+    \item \textbf{Αγνόηση πλαισίου.} Κάθε λέξη λαμβάνει σταθερό
+    embedding ανεξάρτητα από τα συμφραζόμενα --- πολυσημία όπως
+    ``bank'' (ποτάμι vs.\ τράπεζα) δεν αποσαφηνίζεται.
 \end{itemize}
 
 %-----------------------------------------------------------------------
-\section{Training}
+\section{Εκπαίδευση}
 
-\subsection{EX7 --- DataLoaders}
+\subsection{Ζητούμενο 7 --- DataLoaders}
 
-\begin{lstlisting}
-train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=True)
-test_loader  = DataLoader(test_set,  batch_size=BATCH_SIZE)
-\end{lstlisting}
+\textbf{Μέγεθος mini-batch.}
+Η διακύμανση του σφάλματος ανά batch είναι
+$\mathrm{Var}(L_B) = \sigma_\ell^2 / |B|$,
+όπου $\sigma_\ell^2$ η διακύμανση ανά δείγμα.
+Μικρά batches δίνουν θορυβώδεις ενημερώσεις
+(ρυθμιστικό αποτέλεσμα, λιγότερο overfitting),
+ενώ μεγάλα batches σταθερή σύγκλιση αλλά τάση
+συγκέντρωσης σε ``αιχμηρά'' ελάχιστα.
 
-\textbf{What are the consequences of small vs.\ large mini-batches?}
+\textbf{Γιατί ανακατεύουμε (shuffle);}
+Χωρίς ανακάτεμα, τα ίδια δείγματα σχηματίζουν πάντα τα ίδια batches
+και εμφανίζονται στην ίδια σειρά, εισάγοντας σειριακή μεροληψία.
+Η ανακατανομή εξασφαλίζει πιο αντιπροσωπευτικές εκτιμήσεις gradient
+ανά εποχή.
 
-The per-batch loss $L_B = \frac{1}{|B|}\sum_{i \in B} \ell_i(\theta)$ is a sample mean
-over i.i.d.\ draws, so its variance is:
-\[
-    \mathrm{Var}(L_B) = \frac{\sigma_\ell^2}{|B|}
-\]
-where $\sigma_\ell^2$ is the per-sample loss variance. This variance is an indicator of the ``jaggedness'' of the loss curve: higher variance
-means larger fluctuations in the reported loss from batch to batch. Since it decreases
-with $|B|$, this explains why:
+\subsection{Ζητούμενο 8 --- Συνάρτηση Σφάλματος, Παράμετροι, Optimizer}
 
 \begin{itemize}
-    \item \textbf{Small batches} have high $\mathrm{Var}(L_B)$, so the loss curve
-    appears jagged. However, they yield more weight updates per epoch and the gradient
-    noise acts as a regularizer---it prevents the model from settling into sharp minima,
-    reducing overfitting.
-
-    \item \textbf{Large batches} have low $\mathrm{Var}(L_B)$, leading to a smooth loss
-    curve and more predictable convergence. The downside is fewer updates per epoch and a
-    tendency to converge to sharper minima that may generalize worse.
+    \item \textbf{Loss:} Για δυαδική κατηγοριοποίηση (MR) χρησιμοποιούμε
+    \texttt{BCEWithLogitsLoss} (ένα logit, sigmoid + BCE). Για τρεις
+    κλάσεις (Semeval2017A) χρησιμοποιούμε \texttt{CrossEntropyLoss}
+    (softmax + NLL).
+    \item \textbf{Παράμετροι:} Μόνο οι παράμετροι με
+    \texttt{requires\_grad=True} περνούν στον optimizer ---
+    τα παγωμένα embeddings εξαιρούνται.
+    \item \textbf{Optimizer:} Adam (adaptive learning rate ανά
+    παράμετρο μέσω running moments).
 \end{itemize}
 
-\textbf{Why do we shuffle the training data each epoch?}
+\subsection{Ζητούμενο 9 --- Βρόχοι Εκπαίδευσης και Αξιολόγησης}
 
-Without shuffling, the same examples always form the same batches and appear in the same
-order. This introduces \emph{sequential bias}: the weight updates at the end of each
-epoch are systematically driven by the same subset of examples, skewing the model toward
-patterns in that subset. For instance, if the last batches happen to contain mostly
-negative reviews, the final updates of every epoch would push the model toward predicting
-``negative.'' Shuffling breaks this fixed ordering, ensures different batch compositions
-each epoch, and makes the gradient estimates more representative of the full dataset
-across training.
-
-\subsection{EX8 --- Loss Function, Parameters, and Optimizer}
-
-\begin{lstlisting}
-if DATASET == "MR":
-    criterion = nn.BCEWithLogitsLoss()
-    output_dim = 1  # single logit for binary classification
-elif DATASET == "Semeval2017A":
-    criterion = nn.CrossEntropyLoss()
-    output_dim = 3  # 3 classes: positive, negative, neutral
-
-model = BaselineDNN(
-    output_size=output_dim,
-    embeddings=embeddings,
-    trainable_emb=EMB_TRAINABLE,
-)
-
-parameters = [p for p in model.parameters() if p.requires_grad]
-optimizer = torch.optim.Adam(parameters, lr=0.001)
-\end{lstlisting}
-
-\textbf{Loss function.}
-For the binary MR task (2 classes) we use \texttt{BCEWithLogitsLoss}, which combines a
-sigmoid activation with binary cross-entropy in a single numerically stable operation.
-The output layer has a single neuron (\texttt{output\_dim=1}), producing one logit;
-the predicted class is positive if the logit exceeds zero.
-For the three-class Semeval2017A task we use \texttt{CrossEntropyLoss}, which applies
-softmax internally and computes the negative log-likelihood of the correct class.
-
-\textbf{Trainable parameters.}
-We collect only parameters with \texttt{requires\_grad == True}. When the embedding layer
-is frozen (\texttt{trainable\_emb=False}), its weights are excluded from the optimizer,
-leaving only the hidden layer and output layer weights to be updated. This avoids wasting
-computation on frozen parameters and, more importantly, ensures the pre-trained embedding
-space is not distorted by gradient updates from our small dataset.
-
-\textbf{Optimizer.}
-We use Adam, which maintains per-parameter adaptive learning rates via running estimates
-of the first and second moments of the gradient. This makes it well-suited for our setting
-where different parameter groups (hidden layer vs.\ output layer) may have very different
-gradient magnitudes, removing the need to hand-tune a learning rate schedule.
-
-\subsection{EX9 --- Training and Evaluation Loops}
-
-\begin{lstlisting}
-# In train_dataset:
-inputs = inputs.to(device)
-labels = labels.to(device)
-lengths = lengths.to(device)
-optimizer.zero_grad()
-outputs = model(inputs, lengths)
-if isinstance(loss_function, torch.nn.BCEWithLogitsLoss):
-    outputs = outputs.squeeze(1)
-    labels = labels.float()
-loss = loss_function(outputs, labels)
-loss.backward()
-optimizer.step()
-
-# In eval_dataset:
-inputs = inputs.to(device)
-labels = labels.to(device)
-lengths = lengths.to(device)
-outputs = model(inputs, lengths)
-if isinstance(loss_function, torch.nn.BCEWithLogitsLoss):
-    outputs = outputs.squeeze(1)
-    labels = labels.float()
-loss = loss_function(outputs, labels)
-if isinstance(loss_function, torch.nn.BCEWithLogitsLoss):
-    predicted = (outputs > 0).long()
-else:
-    predicted = torch.argmax(outputs, dim=1)
-y_pred.append(predicted.cpu().numpy())
-y.append(labels.cpu().numpy())
-\end{lstlisting}
-
-Both functions move tensors to the model's device before computation.
-For \texttt{BCEWithLogitsLoss}, the output is squeezed from shape $(B, 1)$ to $(B,)$
-and labels are cast to float, since BCE expects float targets.
-Predictions use the sign of the logit (threshold at 0) for binary classification and
-\texttt{argmax} for multi-class.
+Η \texttt{train\_dataset} εκτελεί forward pass, υπολογίζει το loss,
+κάνει backpropagation και ενημερώνει τα βάρη (SGD step).
+Η \texttt{eval\_dataset} αξιολογεί χωρίς gradient, υπολογίζοντας
+τις προβλέψεις: threshold στο μηδέν (sign of logit) για BCEWithLogitsLoss
+ή $\arg\max$ για CrossEntropyLoss.
 
 %-----------------------------------------------------------------------
-\section{Evaluation}
+\section{Αξιολόγηση}
 
-\subsection{EX10 --- Metrics and Training Curves}
+\subsection{Ζητούμενο 10 --- Μετρικές και Καμπύλες Εκπαίδευσης}
 
-\textbf{MR Dataset} (binary: positive / negative):
-
-\begin{center}
-\begin{tabular}{lc}
-\toprule
-Metric & Score \\
-\midrule
-Accuracy & 0.660 \\
-Recall (macro) & 0.661 \\
-F1 Score (macro) & 0.660 \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\textbf{Semeval2017A Dataset} (3-class: positive / negative / neutral):
-
-\begin{center}
-\begin{tabular}{lc}
-\toprule
-Metric & Score \\
-\midrule
-Accuracy & 0.601 \\
-Recall (macro) & 0.591 \\
-F1 Score (macro) & 0.580 \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-The training curves (train and test loss per epoch) for both datasets are shown below.
-
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/loss_baseline.png}
-\caption{Training curves for the Baseline DNN (mean pooling) on MR (left) and Semeval2017A (right).}
+\caption{Καμπύλες εκπαίδευσης του Baseline DNN (mean pooling) στο MR (αριστερά) και Semeval2017A (δεξιά).}
 \end{figure}
 
-Results (\texttt{results/baseline\_results.txt}):
-\lstinputlisting[language={}]{results/baseline_results.txt}
+\lstinputlisting[language={}, firstline=21, lastline=32]{results/baseline_results.txt}
 
-\subsection{EX11 --- Observations}
+Το μοντέλο επιτυγχάνει $\sim$70\% F1 στο MR και $\sim$53\% στο Semeval2017A.
+Η χαμηλότερη επίδοση στο Semeval εξηγείται τόσο από την τρίτη (neutral)
+κλάση όσο και από τη θορυβώδη φύση των tweets.
 
-% TODO: fill in after final runs
+\subsection{Ζητούμενο 11 --- Κατηγοριοποίηση με LLM (ChatGPT)}
+
+Δοκιμάσαμε το ChatGPT (GPT-4) σε zero-shot κατηγοριοποίηση
+συναισθήματος, χρησιμοποιώντας κατάλληλα prompts.
+
+\subsubsection*{MR Dataset}
+
+Επιλέχθηκαν 40 κριτικές ταινιών (20 θετικές, 20 αρνητικές).
+Στο prompt ανατέθηκε ο ρόλος ``expert movie critic and sentiment
+analyzer'' και ζητήθηκε ταξινόμηση σε Positive/Negative.
+
+\textbf{Αποτέλεσμα: Accuracy $= 1.0$ (40/40 σωστά).}
+
+Σε δεύτερο prompt ζητήθηκε ανάλυση 6 αντιπροσωπευτικών
+παραδειγμάτων (3 εύκολα, 3 δύσκολα):
+\begin{itemize}
+    \item \textit{Εύκολα:} Λέξεις-κλειδιά όπως ``masterpiece'' ή
+    η τριπλή επανάληψη ``bad'' δίνουν ξεκάθαρο σήμα.
+    \item \textit{Δύσκολα:} Αντιθετικές δομές (``interesting, but
+    not compelling'') απαιτούν κατανόηση ότι ο σύνδεσμος ``but''
+    μετατοπίζει το βάρος στο δεύτερο σκέλος. Το μοντέλο τα
+    χειρίστηκε σωστά, αποδεικνύοντας βαθιά κατανόηση
+    συντακτικής δομής.
+\end{itemize}
+
+\subsubsection*{Semeval2017A Dataset}
+
+Επιλέχθηκαν 60 tweets (20 ανά κατηγορία).
+Στο prompt ανατέθηκε ο ρόλος ``expert social media sentiment
+analyzer'' και ζητήθηκε ταξινόμηση σε Positive/Negative/Neutral.
+
+\textbf{Αποτέλεσμα: Accuracy $= 1.0$ (60/60 σωστά).}
+
+Η πιο δύσκολη κατηγορία ήταν η \textbf{Neutral}, επειδή πολλά
+tweets κρύβουν έμμεσο συναίσθημα. Π.χ.\ ``Checking out the new
+coffee shop downtown'' θα μπορούσε να θεωρηθεί θετικό (προσμονή),
+αλλά η απουσία ρητών επιθέτων οδήγησε σωστά σε Neutral.
+
+\subsubsection*{Συμπέρασμα}
+
+Σε αντίθεση με τα μοντέλα βασισμένα σε static embeddings, τα
+LLMs δεν λειτουργούν ως ``bag-of-words'' ταξινομητές:
+αντιλαμβάνονται σαρκασμό (``Thanks for nothing''), αντιθέσεις
+(``but'', ``even though''), και εντοπίζουν ότι intensity modifiers
+(``just plain bad'') ενισχύουν το συναίσθημα. Αυτό αποδίδεται
+στα contextualized embeddings και στην εκπαίδευση σε τεράστιο
+όγκο δεδομένων.
 
 %=======================================================================
 \part{Κυρίως Εργαστήριο}
@@ -431,113 +249,435 @@ mean pooling και του max pooling των word embeddings:
     \mathbf{u} = [\operatorname{mean}(E) \,\|\, \operatorname{max}(E)]
 \]
 
-Στον κώδικα, αυτό επιτυγχάνεται μέσω της παραμέτρου \texttt{max\_concat}
-στο \texttt{BaselineDNN}:
-
-\begin{lstlisting}
-if self.max_concat:
-    max_emb = torch.max(embeddings, dim=1).values
-    representations = torch.cat(
-        (representations, max_emb), dim=1
-    )
-\end{lstlisting}
-
-Ο πρώτος γραμμικός μετασχηματισμός αλλάζει μέγεθος εισόδου ανάλογα:
-\begin{lstlisting}
-self.fc1 = nn.Linear(
-    (2 if max_concat else 1) * emb_dim, hidden_size
-)
-\end{lstlisting}
+Ο πρώτος γραμμικός μετασχηματισμός δέχεται είσοδο $2 \times d$ αντί $d$, χωρίς
+επιπλέον εκπαιδεύσιμες παραμέτρους στο embedding.
 
 \subsection{1.2 --- Σύγκριση με την αρχική αναπαράσταση}
 
 Η αρχική αναπαράσταση (mean pooling μόνο) κρατάει μόνο τη ``μέση σημασιολογική
-εικόνα'' της πρότασης: κάθε διάσταση του τελικού διανύσματος αντιστοιχεί στον
-μέσο όρο αυτής της διάστασης πάνω σε όλα τα tokens.
-
+εικόνα'' της πρότασης.
 Η προσθήκη του max pooling εξάγει παραπάνω πληροφορία:
 
 \begin{itemize}
     \item \textbf{Ανίχνευση κυρίαρχων χαρακτηριστικών.}
     Το max pooling επιλέγει, ανά διάσταση, τη μέγιστη τιμή μεταξύ
-    όλων των λέξεων. Αυτό σημαίνει ότι αρκεί \emph{μία} λέξη με
-    ισχυρή ενεργοποίηση σε μια διάσταση (π.χ.\ μια έντονα αρνητική
-    λέξη σε μια ``sentiment intensity'' διάσταση) για να αποτυπωθεί
-    στην αναπαράσταση, ακόμα κι αν οι υπόλοιπες λέξεις δεν συνεισφέρουν
-    σε αυτήν---κάτι που ο μέσος όρος θα ``αραίωνε''.
+    όλων των λέξεων. Αρκεί \emph{μία} λέξη με ισχυρή ενεργοποίηση
+    (π.χ.\ μια έντονα αρνητική λέξη σε μια ``sentiment intensity''
+    διάσταση) για να αποτυπωθεί στην αναπαράσταση, ακόμα κι αν
+    ο μέσος όρος θα ``αραίωνε'' αυτό το σήμα.
 
     \item \textbf{Συμπληρωματικότητα.}
-    Ο μέσος όρος αποτυπώνει το ``γενικό τόνο'' της πρότασης, ενώ
-    το μέγιστο αποτυπώνει τα ``ακραία σήματα''. Η συνένωσή τους
-    δίνει στο μοντέλο πρόσβαση και στις δύο πληροφορίες, αυξάνοντας
-    την εκφραστικότητα της αναπαράστασης χωρίς να εισάγει επιπλέον
-    εκπαιδεύσιμες παραμέτρους στο embedding (μόνο ο πρώτος γραμμικός
-    μετασχηματισμός μεγαλώνει).
+    Ο μέσος όρος αποτυπώνει τον ``γενικό τόνο'', ενώ το μέγιστο
+    τα ``ακραία σήματα''. Η συνένωσή τους δίνει πρόσβαση και
+    στις δύο πληροφορίες.
 \end{itemize}
 
 \subsection{1.3 --- Αποτελέσματα}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/loss_baseline_maxconcat.png}
-\caption{Training curves for DNN with mean+max pooling on MR (left) and Semeval2017A (right).}
+\caption{Καμπύλες εκπαίδευσης DNN με mean+max pooling στο MR (αριστερά) και Semeval2017A (δεξιά).}
 \end{figure}
 
-Results (\texttt{results/baseline\_maxconcat\_results.txt}):
 \lstinputlisting[language={}]{results/baseline_maxconcat_results.txt}
-
-Η συνένωση mean + max pooling βελτιώνει σταθερά και τα δύο datasets,
-με μεγαλύτερη διαφορά στο MR ($\sim$+2\% F1). Το αποτέλεσμα
-επιβεβαιώνει ότι το max pooling συνεισφέρει συμπληρωματική πληροφορία
-που ο μέσος όρος μόνος του αραιώνει.
 
 %=======================================================================
 \section{Ερώτημα 2 --- LSTM \& BiLSTM}
 
-\subsection{2.1 --- LSTM}
+\subsection{2.1 --- Θεωρητικό πλαίσιο}
 
-\begin{figure}[h]
+Το LSTM, σε αντίθεση με τον μέσο όρο embeddings, επεξεργάζεται τις
+λέξεις \emph{σειριακά}, διατηρώντας μια εσωτερική κατάσταση (hidden
+state) που λειτουργεί ως ``μνήμη'' των προηγούμενων tokens. Κάθε βήμα
+παράγει μια νέα αναπαράσταση $h_i$ που λαμβάνει υπόψη τόσο τη
+τρέχουσα λέξη $e_i$ όσο και τα συμφραζόμενα.
+
+Ο μηχανισμός θυρών (forget, input, output gates) ρυθμίζει ποια
+πληροφορία διατηρείται ή απορρίπτεται, επιτρέποντας στο δίκτυο
+να μαθαίνει μακρινές εξαρτήσεις χωρίς το πρόβλημα vanishing
+gradient που εμφανίζεται σε απλά RNNs.
+
+Χρησιμοποιούμε ως αναπαράσταση κειμένου την τελευταία πραγματική
+έξοδο $h_N$ (αγνοώντας τα padded timesteps), αντικαθιστώντας τον
+μέσο όρο embeddings.
+
+\subsection{2.2 --- LSTM}
+
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/loss_lstm.png}
-\caption{Training curves for LSTM on MR (left) and Semeval2017A (right).}
+\caption{Καμπύλες εκπαίδευσης LSTM στο MR (αριστερά) και Semeval2017A (δεξιά).}
 \end{figure}
 
-Results (\texttt{results/lstm\_results.txt}):
 \lstinputlisting[language={}]{results/lstm_results.txt}
 
-\subsection{2.2 --- BiLSTM}
+\subsection{2.3 --- Αμφίδρομο LSTM (BiLSTM)}
 
-\begin{figure}[h]
+Το BiLSTM συνδυάζει ένα δεξιόστροφο και ένα αριστερόστροφο LSTM.
+Η τελική αναπαράσταση κάθε βήματος είναι:
+\[
+    h_i = [\overrightarrow{h_i} \,\|\, \overleftarrow{h_i}], \quad h_i \in \mathbb{R}^{2H}
+\]
+
+Αυτό επιτρέπει σε κάθε λέξη να ``γνωρίζει'' τόσο το αριστερό
+(τι προηγήθηκε) όσο και το δεξί (τι ακολουθεί) πλαίσιο ---
+κρίσιμο για τη φυσική γλώσσα, όπου η σημασία μιας λέξης
+εξαρτάται συχνά και από τις μεταγενέστερες.
+
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/loss_bilstm.png}
-\caption{Training curves for BiLSTM on MR (left) and Semeval2017A (right).}
+\caption{Καμπύλες εκπαίδευσης BiLSTM στο MR (αριστερά) και Semeval2017A (δεξιά).}
 \end{figure}
 
-Results (\texttt{results/bilstm\_results.txt}):
 \lstinputlisting[language={}]{results/bilstm_results.txt}
+
+Το BiLSTM βελτιώνει σταθερά την επίδοση σε σχέση με το
+μονοκατευθυντικό LSTM, ιδιαίτερα στο MR ($+0.7$\% F1). Η βελτίωση
+επιβεβαιώνει ότι η πληροφορία από τα δεξιά συμφραζόμενα είναι
+χρήσιμη για την ανάλυση συναισθήματος.
 
 %=======================================================================
 \section{Ερώτημα 3 --- Self-Attention}
 
-\begin{figure}[h]
+\subsection{3.1 --- Υλοποίηση και Αποτελέσματα}
+
+Ο μηχανισμός self-attention αντικαθιστά τη σειριακή επεξεργασία
+του LSTM με μια \emph{παράλληλη} λειτουργία: κάθε λέξη ``επικοινωνεί''
+ταυτόχρονα με όλες τις υπόλοιπες, υπολογίζοντας πόσο σχετική
+είναι η κάθε μία.
+
+Τα βάρη attention υπολογίζονται ως:
+\[
+    \text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V
+\]
+
+Η αναπαράσταση κάθε πρότασης εξάγεται μέσω average-pooling
+στις εξόδους του attention (μασκάροντας τα padding positions),
+ακολουθούμενο από ένα γραμμικό output layer.
+
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/loss_self_attention.png}
-\caption{Training curves for Self-Attention on MR (left) and Semeval2017A (right).}
+\caption{Καμπύλες εκπαίδευσης Self-Attention στο MR (αριστερά) και Semeval2017A (δεξιά).}
 \end{figure}
 
-Results (\texttt{results/self\_attention\_results.txt}):
 \lstinputlisting[language={}]{results/self_attention_results.txt}
+
+\subsection{3.2 --- Queries, Keys, Values \& Position Embeddings}
+
+Κάθε token παράγει τρία διανύσματα μέσω γραμμικών προβολών:
+
+\begin{itemize}
+    \item \textbf{Query} ($q$): ``τι πληροφορία ψάχνω;'' ---
+    αντιπροσωπεύει αυτό που θέλει να μάθει το token.
+    \item \textbf{Key} ($k$): ``τι πληροφορία προσφέρω;'' ---
+    αντιπροσωπεύει αυτό που ``διαφημίζει'' το token.
+    \item \textbf{Value} ($v$): ``ποιο είναι το πραγματικό μου
+    περιεχόμενο;'' --- η πληροφορία που μεταδίδεται αν
+    η ``ερώτηση'' ταιριάξει.
+\end{itemize}
+
+Το εσωτερικό γινόμενο $q_i^T k_j$ μετρά πόσο σχετικό είναι
+το token $j$ για το token $i$. Τα values σταθμίζονται
+από τα κανονικοποιημένα (softmax) βάρη.
+
+Τα \textbf{position embeddings} είναι απαραίτητα διότι ο
+μηχανισμός attention δεν έχει εγγενή έννοια θέσης ---
+λειτουργεί σε ένα \emph{σύνολο} διανυσμάτων, όχι σε μια
+ακολουθία. Προσθέτοντας ένα μαθήσιμο embedding θέσης σε
+κάθε token ($x = e_i + p_i$), το μοντέλο αποκτά πρόσβαση
+στην πληροφορία σειράς.
 
 %=======================================================================
 \section{Ερώτημα 4 --- MultiHead Attention}
 
-\begin{figure}[h]
+Αντί ενός μόνο attention head, χρησιμοποιούμε $h$ heads
+παράλληλα, κάθε ένα με $d_k = d / h$ διαστάσεις.
+Κάθε head μαθαίνει διαφορετικές σχέσεις μεταξύ tokens:
+ένα μπορεί να εστιάζει σε σχέσεις ``γειτονικών'' λέξεων,
+ένα άλλο σε μακρινές εξαρτήσεις, ένα τρίτο σε σημασιολογική
+ομοιότητα κλπ. Οι έξοδοι συνενώνονται και προβάλλονται
+πίσω στην αρχική διάσταση:
+\[
+    \text{MHA}(x) = [h_1 \,\|\, h_2 \,\|\, \cdots \,\|\, h_h] \, W^O
+\]
+
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/loss_multihead_attention.png}
-\caption{Training curves for MultiHead Attention on MR (left) and Semeval2017A (right).}
+\caption{Καμπύλες εκπαίδευσης MultiHead Attention στο MR (αριστερά) και Semeval2017A (δεξιά).}
 \end{figure}
 
-Results (\texttt{results/multihead\_attention\_results.txt}):
 \lstinputlisting[language={}]{results/multihead_attention_results.txt}
+
+Η χρήση πολλαπλών heads βελτιώνει την επίδοση σε σχέση
+με το single-head self-attention ($+2$\% F1 στο MR),
+καθώς κάθε head εξειδικεύεται σε διαφορετικό τύπο σχέσης.
+
+%=======================================================================
+\section{Ερώτημα 5 --- Transformer Encoder}
+
+\subsection{5.1 --- Αρχιτεκτονική}
+
+Ο Transformer Encoder αποτελείται από πολλαπλά \texttt{Block},
+κάθε ένα με:
+\begin{enumerate}
+    \item MultiHead Self-Attention + residual connection + Layer Normalization
+    \item Feed-Forward Network ($d \to 4d \to d$) + residual connection + Layer Normalization
+\end{enumerate}
+
+Η βασική διαφορά από το MultiHeadAttentionModel είναι:
+\begin{itemize}
+    \item \textbf{Στοίβαξη} πολλαπλών blocks ($N$ layers), που
+    επιτρέπει σταδιακή εξαγωγή υψηλότερου επιπέδου αναπαραστάσεων.
+    \item \textbf{Residual connections} ($x + f(x)$), που
+    εξασφαλίζουν ομαλή ροή gradient και επιτρέπουν βαθύτερα δίκτυα.
+    \item \textbf{Layer Normalization}, που σταθεροποιεί την εκπαίδευση.
+\end{itemize}
+
+\subsection{5.2 --- Υπερπαράμετροι}
+
+Στην κλασική αρχιτεκτονική ``Attention Is All You Need'', οι default τιμές
+είναι: $d_{\text{model}} = 512$, $h = 8$ heads, $N = 6$ layers,
+$d_{ff} = 2048$.
+
+Στην υλοποίησή μας χρησιμοποιήσαμε Twitter GloVe embeddings
+($d = 200$), $h = 5$ heads, $N = 5$ layers, $d_{ff} = 800$,
+λόγω του μικρότερου μεγέθους embeddings και dataset.
+
+\subsection{5.3 --- Αποτελέσματα}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/loss_transformer.png}
+\caption{Καμπύλες εκπαίδευσης Transformer Encoder στο MR (αριστερά) και Semeval2017A (δεξιά).}
+\end{figure}
+
+\lstinputlisting[language={}, firstline=143, lastline=153]{results/transformer_results.txt}
+
+Ο Transformer Encoder πετυχαίνει την υψηλότερη επίδοση μεταξύ
+των μοντέλων Ερωτημάτων 1--5 (73.1\% F1 στο MR, 60.3\% στο
+Semeval2017A), αποδεικνύοντας ότι η βαθύτερη αρχιτεκτονική
+αξιοποιεί καλύτερα τις σχέσεις μεταξύ tokens.
+
+%=======================================================================
+\section{Ερώτημα 6 --- Pre-Trained Transformers (Zero-Shot)}
+
+Αξιολογήσαμε 3 προ-εκπαιδευμένα μοντέλα ανά dataset σε zero-shot
+κατηγοριοποίηση (χωρίς εκπαίδευση, μόνο inference).
+
+\subsection{6.1 --- MR Dataset}
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Μοντέλο & Accuracy & Recall & F1 \\
+\midrule
+DistilBERT-SST2 & 0.891 & 0.891 & 0.891 \\
+RoBERTa-large (siebert) & \textbf{0.924} & \textbf{0.924} & \textbf{0.924} \\
+BERT-SST2 (textattack) & 0.899 & 0.899 & 0.899 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{6.2 --- Semeval2017A Dataset}
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Μοντέλο & Accuracy & Recall & F1 \\
+\midrule
+twitter-roberta-base & \textbf{0.724} & 0.723 & \textbf{0.722} \\
+bertweet-base & 0.718 & \textbf{0.730} & 0.718 \\
+sentiment-roberta-large-3c & 0.698 & 0.649 & 0.669 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{6.3 --- Σχολιασμός}
+
+Τα pre-trained μοντέλα υπερτερούν κατά πολύ ($+15$--$20$\% F1)
+σε σχέση με τα μοντέλα που εκπαιδεύσαμε (Q1--Q5). Αυτό αποδίδεται
+στο ότι τα μοντέλα αυτά:
+\begin{itemize}
+    \item Χρησιμοποιούν contextualized embeddings αντί static.
+    \item Είναι εκπαιδευμένα σε τεράστια corpora (εκατοντάδες GB κειμένου).
+    \item Έχουν ήδη κάνει fine-tuning σε sentiment analysis tasks.
+\end{itemize}
+
+Στο Semeval2017A, τα μοντέλα εκπαιδευμένα σε Twitter
+(roberta-base-sentiment, bertweet) υπερτερούν αισθητά
+σε σχέση με ένα general-purpose μοντέλο, επιβεβαιώνοντας ότι
+η αντιστοιχία domain μεταξύ pre-training και εφαρμογής είναι κρίσιμη.
+
+%=======================================================================
+\section{Ερώτημα 7 --- Fine-Tuning Pre-Trained Transformers}
+
+Κάνουμε fine-tuning βασικών (base) μοντέλων στα δικά μας
+datasets (5 epochs, batch size 32, lr $= 5 \times 10^{-5}$).
+
+\subsection{7.1 --- MR Dataset}
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+Μοντέλο & Epochs & Accuracy & Recall & F1 \\
+\midrule
+bert-base-uncased & 5 & 0.849 & 0.840 & 0.848 \\
+distilbert-base-uncased & 5 & 0.840 & 0.843 & 0.840 \\
+roberta-base & 5 & \textbf{0.881} & 0.837 & \textbf{0.875} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{7.2 --- Semeval2017A Dataset}
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+Μοντέλο & Epochs & Accuracy & Recall & F1 \\
+\midrule
+twitter-roberta-base & 5 & \textbf{0.703} & \textbf{0.718} & \textbf{0.704} \\
+bertweet-base (vinai) & 5 & 0.700 & 0.717 & 0.702 \\
+bert-base-cased & 5 & 0.674 & 0.673 & 0.669 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{7.3 --- Σχολιασμός}
+
+Τα fine-tuned μοντέλα βελτιώνουν σημαντικά τα μοντέλα Q1--Q5
+αλλά υστερούν σε σχέση με τα ήδη fine-tuned μοντέλα του Q6,
+καθώς αυτά εκπαιδεύτηκαν σε μεγαλύτερα και πιο αντιπροσωπευτικά
+sentiment datasets.
+
+Στο Semeval, τα domain-matched μοντέλα (Twitter) ξεπερνούν
+το γενικό bert-base-cased κατά $\sim$3\% F1, επιβεβαιώνοντας
+ξανά τη σημασία του domain-specific pre-training.
+
+Αξιοσημείωτο είναι ότι ακόμη και 5 epochs fine-tuning
+μπορούν να φέρουν ένα base model κοντά στην επίδοση ενός
+ειδικού sentiment model --- η δύναμη του transfer learning
+σε δράση.
+
+%=======================================================================
+\section{Ερώτημα 8 --- Ανάλυση Κώδικα GPT με ChatGPT}
+
+Χρησιμοποιήσαμε το ChatGPT για ανάλυση, αξιολόγηση και
+refactoring του κώδικα ``Let's build GPT'' του A.\ Karpathy.
+
+\subsection*{Επεξήγηση κώδικα}
+
+Το ChatGPT περιέγραψε λεπτομερώς κάθε τμήμα: τη δημιουργία
+του vocabulary (character-level tokenization), τη δομή του
+\texttt{Head} (scaled dot-product attention), τον τρόπο που
+η causal mask εμποδίζει κάθε θέση να ``κοιτάξει'' μελλοντικά
+tokens, και τη λειτουργία του \texttt{Block} ως μονάδα
+``επικοινωνίας + επεξεργασίας''.
+
+\subsection*{Αξιολόγηση}
+
+Ως θετικά αναγνώρισε τη modular δομή (Head, Block, GPT), τη χρήση
+residual connections για σταθερότητα gradient, και το pre-norm
+(LayerNorm πριν, όχι μετά, κάθε sublayer). Ως μειονεκτήματα
+επισήμανε: (α) την απουσία weight tying (embedding \& output layer),
+(β) τη μη χρήση \texttt{nn.MultiheadAttention} του PyTorch,
+(γ) τη σταθερή χρήση dropout χωρίς δυνατότητα αποσύνδεσης
+κατά την αξιολόγηση μέσω \texttt{model.eval()}.
+
+\subsection*{Refactoring}
+
+Πρότεινε τη συγχώνευση των Q/K/V projections σε ένα μόνο
+\texttt{nn.Linear(n\_embd, 3*n\_embd)} για αποδοτικότερο
+υπολογισμό, και τη μετατροπή σε \texttt{nn.MultiheadAttention}
+για αξιοποίηση βελτιστοποιημένων CUDA kernels.
+
+\subsection*{Σχόλια}
+
+Το ChatGPT ήταν πολύ αποτελεσματικό στην εξήγηση αρχιτεκτονικών
+αποφάσεων και στον εντοπισμό καλών πρακτικών. Ωστόσο, ορισμένες
+προτάσεις refactoring (π.χ.\ weight tying) θα μπορούσαν να
+αλλάξουν τη συμπεριφορά εκπαίδευσης --- σημαντικό να ελέγχονται
+πάντα πειραματικά.
+
+%=======================================================================
+\section{Συγκριτικός Πίνακας Αποτελεσμάτων}
+
+\begin{center}
+\small
+\begin{tabular}{l|ccc|ccc}
+\toprule
+ & \multicolumn{3}{c|}{\textbf{MR}} & \multicolumn{3}{c}{\textbf{Semeval2017A}} \\
+\textbf{Μοντέλο} & Acc & Rec & F1 & Acc & Rec & F1 \\
+\midrule
+Baseline (mean) & .704 & .704 & .704 & .563 & .558 & .532 \\
+Baseline (mean+max) & .666 & .667 & .666 & .600 & .594 & .575 \\
+LSTM & .719 & .721 & .718 & .608 & .599 & .594 \\
+BiLSTM & .727 & .733 & .725 & .618 & .628 & .587 \\
+Self-Attention & .696 & .696 & .696 & .612 & .624 & .576 \\
+MultiHead Attention & .716 & .717 & .716 & .620 & .620 & .589 \\
+Transformer Encoder & .731 & .731 & .731 & .622 & .610 & .603 \\
+\midrule
+Pre-trained (best) & .924 & .924 & .924 & .724 & .723 & .722 \\
+Fine-tuned (best) & .881 & .837 & .875 & .703 & .718 & .704 \\
+\midrule
+ChatGPT (zero-shot) & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Παρατηρήσεις:
+\begin{itemize}
+    \item Τα sequence-aware μοντέλα (LSTM, BiLSTM, Transformer)
+    υπερτερούν σταθερά του bag-of-words baseline, καθώς
+    αξιοποιούν τη σειρά και τα συμφραζόμενα.
+    \item Ο Transformer Encoder πετυχαίνει την υψηλότερη
+    επίδοση μεταξύ Q1--Q5, χάρη στη βαθύτερη αρχιτεκτονική
+    και τα residual connections.
+    \item Τα pre-trained μοντέλα κυριαρχούν, αποδεικνύοντας
+    τη δύναμη του transfer learning και των contextualized
+    embeddings.
+    \item Το ChatGPT πετυχαίνει τέλεια ακρίβεια στο δοκιμαστικό
+    δείγμα, αλλά η σύγκριση δεν είναι δίκαιη: αξιολογήθηκε
+    σε μικρό υποσύνολο (40--60 δείγματα) ενώ τα υπόλοιπα
+    μοντέλα αξιολογήθηκαν στο πλήρες test set.
+\end{itemize}
+
+%=======================================================================
+\section{Bonus --- LoRA Fine-Tuning}
+
+Συγκρίναμε πλήρες fine-tuning και LoRA fine-tuning
+του \texttt{textattack/bert-base-uncased-SST-2} στο MR dataset.
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+Μέθοδος & Trainable \% & Accuracy & Recall & F1 & Loss \\
+\midrule
+Full fine-tuning & 100\% & 0.900 & 0.876 & 0.898 & 0.597 \\
+LoRA ($r = 8$) & 1.2\% & \textbf{0.905} & 0.876 & \textbf{0.902} & \textbf{0.413} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Σχεδιαστικές επιλογές LoRA:}
+\begin{itemize}
+    \item Rank $r = 8$ σε όλα τα attention και FFN layers
+    (query, key, value, attention output, intermediate, output dense).
+    \item Ο classifier head παραμένει πλήρως εκπαιδεύσιμος
+    (\texttt{modules\_to\_save}), καθώς είναι μικρός αλλά
+    κρίσιμος για το task.
+    \item Learning rate $2 \times 10^{-4}$, $\sim$$10\times$
+    μεγαλύτερο από full fine-tuning, διότι οι LoRA adapters
+    ξεκινούν από μηδενικά βάρη.
+\end{itemize}
+
+Το LoRA πετυχαίνει ελαφρώς καλύτερη επίδοση με μόλις 1.2\%
+εκπαιδεύσιμες παραμέτρους --- τυπικό αποτέλεσμα, καθώς ο
+περιορισμός χαμηλού rank δρα ως regularizer, αποτρέποντας
+το overfitting που παρατηρείται στο full fine-tuning μετά
+τα 3--4 epochs.
 
 \end{document}
