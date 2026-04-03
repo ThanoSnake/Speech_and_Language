@@ -271,7 +271,7 @@ LLMs δεν λειτουργούν ως ``bag-of-words'' ταξινομητές:
 
 \section{Ερώτημα 1: Mean + Max Pooling}
 
-\subsection{Υλοποίηση}
+\subsection{1.1 Υλοποίηση}
 
 Η αναπαράσταση κάθε πρότασης υπολογίζεται πλέον ως η συνένωση του
 mean pooling και του max pooling των word embeddings:
@@ -371,7 +371,7 @@ if self.max_concat:
 --- στο baseline χρησιμοποιείται μόνο το mean pooling.}
 \end{figure}
 
-\subsection{Σύγκριση με την αρχική αναπαράσταση}
+\subsection{1.2 Σύγκριση και Αποτελέσματα}
 
 Το mean pooling αποτυπώνει τον ``γενικό τόνο'' της πρότασης,
 αλλά αδυνατεί να διατηρήσει ισχυρά τοπικά σήματα: ένα token με
@@ -380,8 +380,6 @@ if self.max_concat:
 των tokens, διατηρώντας τα ``ακραία'' αυτά σήματα.
 Η συνένωση των δύο δίνει στον γραμμικό ταξινομητή και τη γενική
 εικόνα και τα κυρίαρχα χαρακτηριστικά ταυτόχρονα.
-
-\subsection{Αποτελέσματα}
 
 \begin{figure}[H]
 \centering
@@ -537,21 +535,48 @@ $\mathbb{R}^{2H} \to \mathbb{R}^C$ για την τελική ταξινόμησ
 %=======================================================================
 \section{Ερώτημα 3: Self-Attention}
 
-\subsection{Υλοποίηση και Αποτελέσματα}
+\subsection{3.1 Υλοποίηση και Αποτελέσματα}
 
-Ο μηχανισμός self-attention αντικαθιστά τη σειριακή επεξεργασία
-του LSTM με μια \emph{παράλληλη} λειτουργία: κάθε λέξη ``επικοινωνεί''
-ταυτόχρονα με όλες τις υπόλοιπες, υπολογίζοντας πόσο σχετική
-είναι η κάθε μία.
+Ο μηχανισμός self-attention αντικαθιστά τη σειριακή επεξεργασία του LSTM
+με μια \emph{παράλληλη} λειτουργία: κάθε λέξη ``επικοινωνεί'' ταυτόχρονα με
+όλες τις υπόλοιπες στην πρόταση, ώστε το αρχικό της embedding να αντικατασταθεί
+από μια σημασιολογικά εμπλουτισμένη αναπαράσταση βασισμένη στα συμφραζόμενα.
 
-Τα βάρη attention υπολογίζονται ως:
-\[
-    \text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V
-\]
+\medskip
+Την λειτουργία αυτή εκτελεί η κλάση \texttt{Head}, με τον τρόπο που απεικονίζεται παρακάτω:
 
-Η αναπαράσταση κάθε πρότασης εξάγεται μέσω average-pooling
-στις εξόδους του attention (μασκάροντας τα padding positions),
-ακολουθούμενο από ένα γραμμικό output layer.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{selfAttention.png}
+\caption{Διάγραμμα single-head self-attention.
+Η είσοδος $X \in \mathbb{R}^{d \times n}$ είναι ο πίνακας αναπαραστάσεων
+όλων των tokens (embedding matrix).
+Τρεις γραμμικοί μετασχηματισμοί $W^Q, W^K, W^V$ παράγουν τους πίνακες
+$Q, K, V \in \mathbb{R}^{d_k \times n}$.
+Τα τελικά βάρη attention $A \in \mathbb{R}^{n \times n}$ προκύπτουν ως $\text{softmax}(QK^T/\sqrt{d_k})$.
+Η έξοδος $Z = AV \in \mathbb{R}^{d_v \times n}$ είναι η νέα, εμπλουτισμένη, αναπαράσταση
+κάθε token.}
+\end{figure}
+
+Η είσοδος $X$ της \texttt{Head} κατασκευάζεται στο \texttt{forward}
+του \texttt{SimpleSelfAttentionModel} ως άθροισμα token embedding
+και position embedding κάθε θέσης:
+
+\begin{lstlisting}
+# attention.py -- SimpleSelfAttentionModel.forward
+tok_emb = self.token_embedding_table(x)          # (B, T, d)
+pos_emb = self.position_embedding_table(
+    torch.arange(T, device=x.device))             # (T, d)
+x = tok_emb + pos_emb                            # X: (B, T, d)
+x = x + self.sa(self.ln1(x))                     # weighted aggregation + residual
+x = x + self.ffwd(self.ln2(x))                   # separate feed-forward block + residual
+\end{lstlisting}
+
+\medskip
+Ακολουθεί ένα feed-forward layer, και στη συνέχεια εφαρμόζεται
+masked average-pooling για να εξαχθεί αναπαράσταση ολόκληρης
+της πρότασης. Το τελικό γραμμικό classification layer ακολουθεί
+την ίδια λογική με τα προηγούμενα ερωτήματα.
 
 \begin{figure}[H]
 \centering
@@ -561,30 +586,55 @@ $\mathbb{R}^{2H} \to \mathbb{R}^C$ για την τελική ταξινόμησ
 
 \lstinputlisting[language={}]{results/self_attention_results.txt}
 
-\subsection{Queries, Keys, Values \& Position Embeddings}
+Το single-head self-attention επιτυγχάνει 69.6\% F1 στο MR και
+57.6\% στο Semeval2017A. Η επίδοση υπολείπεται του LSTM (71.8\% / 59.4\%)
+και του BiLSTM, κάτι αναμενόμενο για single-head χωρίς πολλαπλή
+εξειδίκευση των heads. Αξίζει να σημειωθεί ότι το LSTM και BiLSTM
+αποδίδουν ιδιαίτερα καλά εδώ λόγω του σχετικά μικρού μήκους
+των προτάσεων στα datasets: η σειριακή επεξεργασία δεν υποφέρει
+από vanishing gradient σε τόσο σύντομες ακολουθίες, οπότε δεν
+αναδεικνύεται η αδυναμία της.
 
-Κάθε token παράγει τρία διανύσματα μέσω γραμμικών προβολών:
+\subsection{3.2 Queries, Keys, Values και Position Embeddings}
+
+Στην κλάση \texttt{Head} (\texttt{attention.py}), κάθε token παράγει
+τρία διανύσματα μέσω των εκπαιδεύσιμων γραμμικών προβολών $W^Q, W^K, W^V$, αντίστοιχα:
 
 \begin{itemize}
-    \item \textbf{Query} ($q$): ``τι πληροφορία ψάχνω;'' ---
-    αντιπροσωπεύει αυτό που θέλει να μάθει το token.
-    \item \textbf{Key} ($k$): ``τι πληροφορία προσφέρω;'' ---
-    αντιπροσωπεύει αυτό που ``διαφημίζει'' το token.
-    \item \textbf{Value} ($v$): ``ποιο είναι το πραγματικό μου
-    περιεχόμενο;'' --- η πληροφορία που μεταδίδεται αν
-    η ``ερώτηση'' ταιριάξει.
+    \item \textbf{Query} ($q$, ``τι πληροφορία ψάχνω;''): αντιπροσωπεύει
+    αυτό που θέλει να μάθει το token από τα υπόλοιπα.
+    \item \textbf{Key} ($k$, ``τι πληροφορία προσφέρω;''): αντιπροσωπεύει
+    αυτό που ``διαφημίζει'' το token ως περιεχόμενό του.
+    \item \textbf{Value} ($v$, ``ποιο είναι το πραγματικό μου περιεχόμενο;''):
+    η πληροφορία που μεταφέρεται αν η ``ερώτηση'' ταιριάξει με το ``κλειδί''.
 \end{itemize}
 
-Το εσωτερικό γινόμενο $q_i^T k_j$ μετρά πόσο σχετικό είναι
-το token $j$ για το token $i$. Τα values σταθμίζονται
-από τα κανονικοποιημένα (softmax) βάρη.
+\medskip
+Όπως φαίνεται στο παραπάνω διάγραμμα, η έξοδος του head υπολογίζεται ως:
+\[
+    Z = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V
+\]
+Ο παράγοντας $\sqrt{d_k}$ στον παρονομαστή συνίσταται για αριθμητική
+σταθερότητα: αν τα στοιχεία των $q$ και $k$ έχουν μέση τιμή 0 και διακύμανση 1,
+το εσωτερικό τους γινόμενο έχει διακύμανση $d_k$.
+Για μεγάλο $d_k$ τα γινόμενα γίνονται αριθμητικά μεγάλα, ωθώντας το softmax
+σε περιοχές κορεσμού με μηδενικές σχεδόν κλίσεις.
+Η διαίρεση με $\sqrt{d_k}$ ανάγει τη διακύμανση πίσω στη μονάδα,
+αποτρέποντας το πρόβλημα αυτό.
 
-Τα \textbf{position embeddings} είναι απαραίτητα διότι ο
-μηχανισμός attention δεν έχει εγγενή έννοια θέσης ---
-λειτουργεί σε ένα \emph{σύνολο} διανυσμάτων, όχι σε μια
-ακολουθία. Προσθέτοντας ένα μαθήσιμο embedding θέσης σε
-κάθε token ($x = e_i + p_i$), το μοντέλο αποκτά πρόσβαση
-στην πληροφορία σειράς.
+Στην υλοποίησή μας επιλέχθηκε $d_k = d$, δηλαδή οι προβολές $Q, K, V$
+έχουν την ίδια διάσταση με τα embeddings.
+
+\medskip
+Τα \textbf{position embeddings} (\texttt{position\_embedding\_table}
+στο \texttt{SimpleSelfAttentionModel}) είναι ένας εκπαιδεύσιμος πίνακας
+μεγέθους $T_{\max} \times d$. Ο μηχανισμός attention από μόνος του
+δεν έχει εγγενή έννοια θέσης: λειτουργεί σε ένα \emph{σύνολο}
+διανυσμάτων και θα έδινε τα ίδια αποτελέσματα ανεξαρτήτως της
+σειράς τους. Προσθέτοντας το position embedding $p_i$ στο token
+embedding $e_i$ ($x_i = e_i + p_i$), το μοντέλο αποκτά πρόσβαση
+στη θέση κάθε token στην ακολουθία, επιτρέποντάς του να διαφοροποιήσει
+π.χ.\ ``not good'' από ``good not''.
 
 %=======================================================================
 \section{Ερώτημα 4: MultiHead Attention}
