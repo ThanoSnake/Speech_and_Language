@@ -5,12 +5,14 @@
 \usepackage[greek,english]{babel}
 \usepackage{alphabeta}
 \usepackage{listings}
+\usepackage{wrapfig}
 \usepackage{xcolor}
 \usepackage{colortbl}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{float}
+\usepackage{caption}
 \usepackage[unicode]{hyperref}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, fit}
@@ -28,12 +30,26 @@
     breaklines=true,
 }
 
-\title{SLP Lab 2: Sentiment Analysis Report\\[0.3em]\large Προπαρασκευή \& Κυρίως Εργαστήριο}
-\author{}
-\date{}
-
 \begin{document}
-\maketitle
+
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\large\bfseries ΕΘΝΙΚΟ ΜΕΤΣΟΒΙΟ ΠΟΛΥΤΕΧΝΕΙΟ}\\[0.4em]
+{\large ΣΧΟΛΗ ΗΛΕΚΤΡΟΛΟΓΩΝ ΜΗΧΑΝΙΚΩΝ \& ΜΗΧΑΝΙΚΩΝ}\\[0.2em]
+{\large ΥΠΟΛΟΓΙΣΤΩΝ}\\[2.5cm]
+
+{\large Επεξεργασία Φωνής και Φυσικής Γλώσσας}\\[1.5cm]
+
+{\LARGE\bfseries 2ο Εργαστήριο: Ανάλυση Συναισθήματος}\\[3cm]
+
+{\large Εμμανουήλ Χατζηγεωργίου \quad 03122082}\\[0.5em]
+{\large Αθανάσιος Φειδάκης \quad 03122676}\\[2.5cm]
+
+\vfill
+{\large Αθήνα, 2026}
+\end{titlepage}
 
 \part{Προπαρασκευή}
 \setcounter{secnumdepth}{0}
@@ -77,7 +93,9 @@ if DEBUG:
 
 \section{Ζητούμενο 2: Λεκτική Ανάλυση}
 
-Για τη λεκτική ανάλυση χρησιμοποιήθηκε ο \texttt{TweetTokenizer}, ο οποίος υπερτερεί του απλού διαχωρισμού βάσει κενού (\texttt{.split()}) καθώς αναγνωρίζει σύνθετες ενότητες όπως emoticons, hashtags και mentions ως ενιαία tokens. Η προσέγγιση αυτή είναι απαραίτητη για δεδομένα κοινωνικών δικτύων, όπου η στίξη και τα σύμβολα φέρουν έντονη συναισθηματική πληροφορία που θα χανόταν με έναν απλό διαχωρισμό. Στη συνέχεια, τα tokens μετατρέπονται σε αριθμητικούς δείκτες μέσω του λεξικού \texttt{word2idx}, με τις άγνωστες λέξεις να αντιστοιχίζονται στο token \texttt{<unk>}. Τέλος, εφαρμόζεται padding και truncation με βάση την παράμετρο \texttt{MAX\_SENTENCE\_LEN}, ώστε να διασφαλιστεί η σταθερή διάσταση των διανυσμάτων εισόδου για την εκπαίδευση του νευρωνικού δικτύου.
+Για τη λεκτική ανάλυση χρησιμοποιήθηκε ο \texttt{TweetTokenizer}, ο οποίος υπερτερεί του απλού διαχωρισμού βάσει κενού (\texttt{.split()}) καθώς αναγνωρίζει σύνθετες ενότητες όπως emoticons, hashtags και mentions ως ενιαία tokens. Η προσέγγιση αυτή είναι απαραίτητη για δεδομένα κοινωνικών δικτύων, όπου η στίξη και τα σύμβολα φέρουν έντονη συναισθηματική πληροφορία που θα χανόταν με έναν απλό διαχωρισμό. Στη συνέχεια, τα tokens μετατρέπονται σε αριθμητικούς δείκτες μέσω του λεξικού \texttt{word2idx}, με τις άγνωστες λέξεις να αντιστοιχίζονται στο token \texttt{<unk>}.
+
+Τέλος, εφαρμόζεται padding και truncation με βάση την παράμετρο \texttt{MAX\_SENTENCE\_LEN}, ώστε να διασφαλιστεί η σταθερή διάσταση των διανυσμάτων εισόδου για την εκπαίδευση του νευρωνικού δικτύου.
 
 \begin{lstlisting}
 # EX 2
@@ -98,7 +116,7 @@ self.embedded_data = [
 
 Τα δέκα πρώτα παραδείγματα μετά την επεξεργασία του \texttt{TweetTokenizer} εμφανίζονται παρακάτω:
 
-\begin{lstlisting}[language={}]
+\begin{lstlisting}[language={}, basicstyle=\ttfamily\scriptsize]
 === EX2: Tokenization (first 10 sentences) ===
 [0] ['05', 'Beat', 'it', '-', 'Michael', 'Jackson', '-', 'Thriller', '(', '25th', 'Anniversary', 'Edition', ')', '[', 'HD', ']', 'http://t.co/A4K2B86PBv']
 [1] ['Jay', 'Z', 'joins', 'Instagram', 'with', 'nostalgic', 'tribute', 'to', 'Michael', 'Jackson', ':', 'Jay', 'Z', 'apparently', 'joined', 'Instagram', 'on', 'Saturday', 'and', '..', 'http://t.co/Qj9I4eCvXy']
@@ -129,7 +147,7 @@ def __getitem__(self, index):
 
 Παρακάτω παρουσιάζονται 5 παραδείγματα για επαλήθευση:
 
-\begin{lstlisting}[language={}]
+\begin{lstlisting}[language={}, basicstyle=\ttfamily\footnotesize]
 Example 0:
   Raw sentence: the rock is destined to be the 21st century's new " conan " and that he's going to make a splash even greater than arnold schwarzenegger , jean-claud van damme or steven segal .
   Dataset returns:
@@ -177,7 +195,6 @@ Example 4:
     \item \textbf{Διαχείριση Αγνώστων Λέξεων (OOV):} Παρατηρείται συχνά ο δείκτης \texttt{1291147}. Αυτός αντιστοιχεί στο token \texttt{<unk>}, υποδεικνύοντας λέξεις που δεν υπήρχαν στο αρχείο των προ-εκπαιδευμένων embeddings (π.χ. εξειδικευμένα ονόματα ή σύνθετοι όροι όπως \textit{too-tepid}).
     \item \textbf{Διαχωρισμός Length και Padding:} Το \texttt{length} (π.χ. 34 στο Παράδειγμα 0) αναπαριστά το πληροφοριακό περιεχόμενο της πρότασης, το οποίο θα χρησιμοποιηθεί από το μοντέλο για να αγνοήσει το padding κατά την εκπαίδευση.
 \end{itemize}
-
 
 \section{Ζητούμενο 4: Embedding Layer}
 
@@ -448,6 +465,8 @@ F1 Score (macro) & $0.535 \pm 0.005$ \\
 
 \textit{Σημείωση: Το πλήρες ιστορικό των συνομιλιών με το μοντέλο και οι αναλυτικές αποκρίσεις του παρατίθενται στα επισυναπτόμενα αρχεία \texttt{chat\_MR.txt} και \texttt{chat\_SV.txt}.}
 
+\newpage
+
 %=======================================================================
 \part{Κυρίως Εργαστήριο}
 %=======================================================================
@@ -489,6 +508,7 @@ if self.max_concat:
 
 \begin{figure}[H]
 \centering
+\scalebox{0.85}{%
 \begin{tikzpicture}[
     token/.style={draw, rounded corners=2pt, minimum width=1.0cm, minimum height=0.55cm,
                   align=center, font=\small\ttfamily, fill=gray!10},
@@ -549,6 +569,7 @@ if self.max_concat:
 \node[font=\small] (log) at (2.25, -7.05) {logits $\in\mathbb{R}^C$};
 \draw[arr] (out) -- (log);
 \end{tikzpicture}
+}
 \caption{Αρχιτεκτονική \texttt{BaselineDNN} με mean+max pooling
 ($d$: διάσταση embedding, $C$: αριθμός κλάσεων).
 Το πλαίσιο $E$ αγκαλιάζει ολόκληρη την ακολουθία.
@@ -705,7 +726,7 @@ else:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{biLSTMarch.png}
+\includegraphics[width=0.75\textwidth]{biLSTMarch.png}
 \caption{Αρχιτεκτονική BiLSTM. Η τελική αναπαράσταση είναι η συνένωση
 $[\,\overrightarrow{h}_N \;\|\; \overleftarrow{h}_1\,] \in \mathbb{R}^{2H}$,
 που περνά από γραμμικό layer $\mathbb{R}^{2H} \to \mathbb{R}^C$.}
@@ -713,7 +734,7 @@ $[\,\overrightarrow{h}_N \;\|\; \overleftarrow{h}_1\,] \in \mathbb{R}^{2H}$,
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{results_v2/loss_bilstm.png}
+\includegraphics[width=0.75\textwidth]{results_v2/loss_bilstm.png}
 \caption{Καμπύλες εκπαίδευσης BiLSTM στο MR (αριστερά) και Semeval2017A (δεξιά).}
 \end{figure}
 
@@ -833,7 +854,7 @@ embedding $e_i$ ($x_i = e_i + p_i$), το μοντέλο αποκτά πρόσβ
     \text{MHA}(x) = [h_1 \,\|\, h_2 \,\|\, \cdots \,\|\, h_h] \, W^O
 \]
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
 # attention.py -- MultiHeadAttention.__init__
 self.heads = nn.ModuleList([Head(head_size, n_embd) for _ in range(num_heads)])
 self.proj  = nn.Linear(n_embd, n_embd)               # W^O
@@ -847,7 +868,7 @@ out = self.dropout(self.proj(out))                    # project back to d
 με το \texttt{SimpleSelfAttentionModel}: χρησιμοποιούνται τα ίδια frozen embedding layer,
 position embeddings και το τελικό γραμμικό classification layer.
 
-\lstinputlisting[language={}, firstline=46, lastline=58]{results_v2/multihead_attention_results.txt}
+\lstinputlisting[language={}, firstline=46, lastline=58, basicstyle=\ttfamily\footnotesize]{results_v2/multihead_attention_results.txt}
 
 Δοκιμάστηκαν $h \in \{2, 5, 10\}$ heads. Η καλύτερη επίδοση στο MR
 επιτεύχθηκε με $h = 2$ (72.8\% F1), ενώ η αύξηση του αριθμού heads
@@ -865,12 +886,12 @@ position embeddings και το τελικό γραμμικό classification lay
     \item Feed-Forward Network ($d \to 4d \to d$) + residual connection + Layer Normalization
 \end{enumerate}
 
-\begin{figure}[H]
+\begin{wrapfigure}{l}{0.50\textwidth}
 \centering
-\includegraphics[width=0.7\textwidth]{bert_encoder.png}
-\caption{Αρχιτεκτονική Transformer Encoder.}
-\end{figure}
-
+\includegraphics[width=\linewidth]{bert_encoder.png}
+\captionof{figure}{Αρχιτεκτονική Transformer Encoder.}
+\end{wrapfigure}
+\hfill
 Η ιδέα πίσω από την αρχιτεκτονική είναι ανάλογη με αυτή ενός βαθιού νευρωνικού δικτύου: κάθε \texttt{Block} επεξεργάζεται την αναπαράσταση των tokens και την περνά στο επόμενο, επιτρέποντας στο μοντέλο να οικοδομεί διαδοχικά πιο αφηρημένες αναπαραστάσεις. Στο πρώτο επίπεδο, η self-attention συνδυάζει πληροφορίες από γειτονικά tokens για να αποτυπώσει τοπικές συντακτικές σχέσεις· στα βαθύτερα επίπεδα, κάθε token έχει ήδη εμπλουτιστεί από τα συμφραζόμενα, οπότε το attention head αλληλεπιδρά με έννοιες υψηλότερου επιπέδου.
 
 Η FFN που ακολουθεί εφαρμόζει μη-γραμμικό μετασχηματισμό ανεξάρτητα σε κάθε θέση, παίζοντας ρόλο ανάλογο με ένα κρυφό επίπεδο DNN. Τέλος, τα residual connections αντιμετωπίζουν το vanishing gradient problem, επιτρέποντας την εκπαίδευση βαθύτερων αρχιτεκτονικών.
@@ -1083,6 +1104,8 @@ bertweet 70.2\%) ξεπερνούν κατά $\sim$3\% F1 το γενικό bert
 Η συνολική αλληλεπίδραση καταδεικνύει ότι τα LLMs δεν είναι απλώς γεννήτριες κώδικα, αλλά γνωστικοί βοηθοί ικανοί για βαθιά σημασιολογική ανάλυση. Το μοντέλο κατάφερε να γεφυρώσει το χαμηλό επίπεδο υλοποίησης (tensors/matrices) με το υψηλό επίπεδο αρχιτεκτονικής σχεδίασης. Η συνεισφορά του είναι ιδιαίτερα πολύτιμη στον εντοπισμό bottlenecks και στην εφαρμογή βέλτιστων πρακτικών best practices, καθιστώντας το αναπόσπαστο εργαλείο για την κατανόηση της εσωτερικής λειτουργίας των μοντέλων που μελετώνται στην Επεξεργασία Φυσικής Γλώσσας
 
 %=======================================================================
+\newpage
+
 \section{Συγκριτικός Πίνακας Αποτελεσμάτων}
 
 \begin{center}
@@ -1112,7 +1135,8 @@ ChatGPT (zero-shot)$^\dagger$ & 1.000 & 1.000 \\
 % Three panels; each has dual y-axes so blue (MR, left) and orange (Semeval, right)
 % each follow their own scale — differences within both datasets are equally visible.
 \noindent
-\begin{minipage}[b]{0.45\textwidth}
+\begin{minipage}[c]{0.60\textwidth}
+\centering
 \begin{tikzpicture}
 % --- MR axis (left, blue) ---
 \begin{axis}[
@@ -1163,7 +1187,8 @@ ChatGPT (zero-shot)$^\dagger$ & 1.000 & 1.000 \\
 \end{axis}
 \end{tikzpicture}
 \end{minipage}%
-\begin{minipage}[b]{0\textwidth}
+\begin{minipage}[c]{0.30\textwidth}
+\centering
 \begin{tikzpicture}
 % --- MR axis (left, blue) ---
 \begin{axis}[
@@ -1212,6 +1237,7 @@ ChatGPT (zero-shot)$^\dagger$ & 1.000 & 1.000 \\
 \noindent$^\dagger$ Αξιολογήθηκε σε μικρό υποσύνολο (40--60 δείγματα).
 
 %=======================================================================
+
 \section{Bonus: LoRA Fine-Tuning}
 
 Το LoRA (Low-Rank Adaptation) είναι μια τεχνική parameter-efficient
