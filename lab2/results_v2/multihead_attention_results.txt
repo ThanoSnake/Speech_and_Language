@@ -1,122 +1,5 @@
-Dataset: MR
-  accuracy: 0.716012084592145
-  recall: 0.7171537367527641
-  f1-score: 0.7156383377354525
-
-Dataset: Semeval2017A
-  accuracy: 0.6199120807554542
-  recall: 0.6203815314754427
-  f1-score: 0.5892598435069948
 ============================================================
-timestamp: 2026-04-04 21:31:46
-label: multihead_attention_h5
-embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
-emb_trainable: False
-max_sentence_length: 40
-batch_size: 128
-max_epochs: 50
-learning_rate: 0.001
-optimizer: Adam
-patience: 5
-val_size: 0.2
-device: cuda
-
-architecture:
-MultiHeadAttentionModel(
-  (token_embedding_table): Embedding(1291148, 50)
-  (position_embedding_table): Embedding(60, 50)
-  (ma): MultiHeadAttention(
-    (heads): ModuleList(
-      (0-4): 5 x Head(
-        (key): Linear(in_features=50, out_features=10, bias=False)
-        (query): Linear(in_features=50, out_features=10, bias=False)
-        (value): Linear(in_features=50, out_features=10, bias=False)
-        (dropout): Dropout(p=0.0, inplace=False)
-      )
-    )
-    (proj): Linear(in_features=50, out_features=50, bias=True)
-    (dropout): Dropout(p=0.0, inplace=False)
-  )
-  (ffwd): FeedFoward(
-    (net): Sequential(
-      (0): Linear(in_features=50, out_features=200, bias=True)
-      (1): ReLU()
-      (2): Linear(in_features=200, out_features=50, bias=True)
-      (3): Dropout(p=0.2, inplace=False)
-    )
-  )
-  (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
-  (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
-  (output): Linear(in_features=50, out_features=1, bias=True)
-)
-
-Dataset: MR
-  epochs_run: 14/50
-  accuracy: 0.7280966767371602
-  recall: 0.7334230018400725
-  f1-score: 0.7265366820885658
-
-Dataset: Semeval2017A
-  epochs_run: 23/50
-  accuracy: 0.593536307391729
-  recall: 0.5864215762849851
-  f1-score: 0.5693622302693676
-============================================================
-timestamp: 2026-04-04 21:33:27
-label: multihead_attention_h10
-embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
-emb_trainable: False
-max_sentence_length: 40
-batch_size: 128
-max_epochs: 50
-learning_rate: 0.001
-optimizer: Adam
-patience: 5
-val_size: 0.2
-device: cuda
-
-architecture:
-MultiHeadAttentionModel(
-  (token_embedding_table): Embedding(1291148, 50)
-  (position_embedding_table): Embedding(60, 50)
-  (ma): MultiHeadAttention(
-    (heads): ModuleList(
-      (0-9): 10 x Head(
-        (key): Linear(in_features=50, out_features=5, bias=False)
-        (query): Linear(in_features=50, out_features=5, bias=False)
-        (value): Linear(in_features=50, out_features=5, bias=False)
-        (dropout): Dropout(p=0.0, inplace=False)
-      )
-    )
-    (proj): Linear(in_features=50, out_features=50, bias=True)
-    (dropout): Dropout(p=0.0, inplace=False)
-  )
-  (ffwd): FeedFoward(
-    (net): Sequential(
-      (0): Linear(in_features=50, out_features=200, bias=True)
-      (1): ReLU()
-      (2): Linear(in_features=200, out_features=50, bias=True)
-      (3): Dropout(p=0.2, inplace=False)
-    )
-  )
-  (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
-  (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
-  (output): Linear(in_features=50, out_features=1, bias=True)
-)
-
-Dataset: MR
-  epochs_run: 21/50
-  accuracy: 0.7386706948640483
-  recall: 0.7390394178733362
-  f1-score: 0.7385698795868287
-
-Dataset: Semeval2017A
-  epochs_run: 21/50
-  accuracy: 0.5936177140996418
-  recall: 0.5882932847356985
-  f1-score: 0.5662393760557413
-============================================================
-timestamp: 2026-04-04 22:13:12
+timestamp: 2026-04-05 01:18:58
 label: multihead_attention_h2
 embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
 emb_trainable: False
@@ -128,6 +11,8 @@ optimizer: Adam
 patience: 5
 val_size: 0.2
 device: cuda
+total_params: 64,590,951
+trainable_params: 33,551
 
 architecture:
 MultiHeadAttentionModel(
@@ -159,13 +44,131 @@ MultiHeadAttentionModel(
 )
 
 Dataset: MR
-  epochs_run: 24/50
-  accuracy: 0.7341389728096677
-  recall: 0.734687342756507
-  f1-score: 0.7339835794587979
+  reps: 10
+  avg_epochs_run: 17.1/50
+  accuracy: 0.7287009063 +/- 0.0112067897
+  recall: 0.7295356774 +/- 0.0114888070
+  f1-score: 0.7284604635 +/- 0.0111574351
 
 Dataset: Semeval2017A
-  epochs_run: 19/50
-  accuracy: 0.5899544122435688
-  recall: 0.5908266133147464
-  f1-score: 0.5548049265956926
+  reps: 10
+  avg_epochs_run: 20.6/50
+  accuracy: 0.5903451644 +/- 0.0059599274
+  recall: 0.5895306980 +/- 0.0058248216
+  f1-score: 0.5584019038 +/- 0.0081721759
+============================================================
+timestamp: 2026-04-05 01:31:00
+label: multihead_attention_h5
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,590,951
+trainable_params: 33,551
+
+architecture:
+MultiHeadAttentionModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(60, 50)
+  (ma): MultiHeadAttention(
+    (heads): ModuleList(
+      (0-4): 5 x Head(
+        (key): Linear(in_features=50, out_features=10, bias=False)
+        (query): Linear(in_features=50, out_features=10, bias=False)
+        (value): Linear(in_features=50, out_features=10, bias=False)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (proj): Linear(in_features=50, out_features=50, bias=True)
+    (dropout): Dropout(p=0.0, inplace=False)
+  )
+  (ffwd): FeedFoward(
+    (net): Sequential(
+      (0): Linear(in_features=50, out_features=200, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=200, out_features=50, bias=True)
+      (3): Dropout(p=0.2, inplace=False)
+    )
+  )
+  (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 10
+  avg_epochs_run: 16.4/50
+  accuracy: 0.7253776435 +/- 0.0100154589
+  recall: 0.7263434761 +/- 0.0102774126
+  f1-score: 0.7250898832 +/- 0.0099693136
+
+Dataset: Semeval2017A
+  reps: 10
+  avg_epochs_run: 18.2/50
+  accuracy: 0.5865516119 +/- 0.0086644276
+  recall: 0.5877272789 +/- 0.0055800336
+  f1-score: 0.5542740804 +/- 0.0113563101
+============================================================
+timestamp: 2026-04-05 01:45:23
+label: multihead_attention_h10
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,590,951
+trainable_params: 33,551
+
+architecture:
+MultiHeadAttentionModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(60, 50)
+  (ma): MultiHeadAttention(
+    (heads): ModuleList(
+      (0-9): 10 x Head(
+        (key): Linear(in_features=50, out_features=5, bias=False)
+        (query): Linear(in_features=50, out_features=5, bias=False)
+        (value): Linear(in_features=50, out_features=5, bias=False)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (proj): Linear(in_features=50, out_features=50, bias=True)
+    (dropout): Dropout(p=0.0, inplace=False)
+  )
+  (ffwd): FeedFoward(
+    (net): Sequential(
+      (0): Linear(in_features=50, out_features=200, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=200, out_features=50, bias=True)
+      (3): Dropout(p=0.2, inplace=False)
+    )
+  )
+  (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 10
+  avg_epochs_run: 18.4/50
+  accuracy: 0.7214501511 +/- 0.0111045172
+  recall: 0.7227323344 +/- 0.0100592765
+  f1-score: 0.7210179046 +/- 0.0115126726
+
+Dataset: Semeval2017A
+  reps: 10
+  avg_epochs_run: 19.3/50
+  accuracy: 0.5924780202 +/- 0.0047780953
+  recall: 0.5905563960 +/- 0.0068685002
+  f1-score: 0.5612666657 +/- 0.0103040424

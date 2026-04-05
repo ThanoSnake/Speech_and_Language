@@ -124,9 +124,17 @@ class LSTM(nn.Module):
         ht, _ = torch.nn.utils.rnn.pad_packed_sequence(ht, batch_first=True)
 
         # pick the output of the lstm corresponding to the last word
-        # TODO: Main-Lab-Q2 (Hint: take actual lengths into consideration)
-        # Collapse to batch_size x hidden_dim
-        representations = ht[torch.arange(batch_size), lengths - 1]
+        # For unidirectional: h_N has seen the full sequence.
+        # For bidirectional: h_N^-> (forward at position N) has seen the full
+        # sequence left-to-right, but h_N^<- (backward at position N) has only
+        # seen one token. The correct backward representation is h_0^<-, which
+        # has processed the full sequence right-to-left.
+        if self.bidirectional:
+            forward_last = ht[torch.arange(batch_size), lengths - 1, :self.hidden_size]
+            backward_first = ht[:, 0, self.hidden_size:]
+            representations = torch.cat([forward_last, backward_first], dim=1)
+        else:
+            representations = ht[torch.arange(batch_size), lengths - 1]
 
         logits = self.linear(representations)
 

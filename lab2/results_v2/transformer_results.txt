@@ -1,0 +1,3693 @@
+============================================================
+timestamp: 2026-04-05 04:00:32
+label: transformer_h2_l2
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,620,551
+trainable_params: 63,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.4/50
+  accuracy: 0.7277945619 +/- 0.0037491461
+  recall: 0.7299367918 +/- 0.0024461288
+  f1-score: 0.7271480139 +/- 0.0043451576
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.4/50
+  accuracy: 0.5860957343 +/- 0.0068526076
+  recall: 0.5834041235 +/- 0.0086869002
+  f1-score: 0.5602128500 +/- 0.0083956384
+============================================================
+timestamp: 2026-04-05 04:06:42
+label: transformer_h2_l3
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,651,051
+trainable_params: 93,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.0/50
+  accuracy: 0.7293051360 +/- 0.0045216403
+  recall: 0.7311095776 +/- 0.0051754658
+  f1-score: 0.7287814153 +/- 0.0046041985
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.4/50
+  accuracy: 0.5935363074 +/- 0.0035308371
+  recall: 0.5873245722 +/- 0.0039660413
+  f1-score: 0.5675576998 +/- 0.0044690804
+============================================================
+timestamp: 2026-04-05 04:15:20
+label: transformer_h2_l5
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,712,051
+trainable_params: 154,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 14.2/50
+  accuracy: 0.7296072508 +/- 0.0077024464
+  recall: 0.7300635772 +/- 0.0076417607
+  f1-score: 0.7294717310 +/- 0.0077330333
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.4/50
+  accuracy: 0.5897264735 +/- 0.0046232704
+  recall: 0.5806842606 +/- 0.0040017929
+  f1-score: 0.5681186692 +/- 0.0075507430
+============================================================
+timestamp: 2026-04-05 04:26:23
+label: transformer_h5_l2
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,620,551
+trainable_params: 63,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 16.2/50
+  accuracy: 0.7268882175 +/- 0.0123977550
+  recall: 0.7295685047 +/- 0.0111121861
+  f1-score: 0.7260471325 +/- 0.0129610493
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.6/50
+  accuracy: 0.5888147183 +/- 0.0048830455
+  recall: 0.5819403849 +/- 0.0042454464
+  f1-score: 0.5657909132 +/- 0.0047841847
+============================================================
+timestamp: 2026-04-05 04:37:35
+label: transformer_h5_l3
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,651,051
+trainable_params: 93,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 12.8/50
+  accuracy: 0.7317220544 +/- 0.0118789144
+  recall: 0.7330881754 +/- 0.0115337793
+  f1-score: 0.7313171622 +/- 0.0120395099
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.6/50
+  accuracy: 0.5884239661 +/- 0.0046364390
+  recall: 0.5839483952 +/- 0.0080205783
+  f1-score: 0.5656081876 +/- 0.0047140193
+============================================================
+timestamp: 2026-04-05 04:49:21
+label: transformer_h5_l5
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,712,051
+trainable_params: 154,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 14.2/50
+  accuracy: 0.7190332326 +/- 0.0127462375
+  recall: 0.7206244650 +/- 0.0133036001
+  f1-score: 0.7185415094 +/- 0.0126495125
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.2/50
+  accuracy: 0.5955551937 +/- 0.0044138354
+  recall: 0.5915063421 +/- 0.0025719901
+  f1-score: 0.5678627216 +/- 0.0075220769
+============================================================
+timestamp: 2026-04-05 05:07:18
+label: transformer_h10_l2
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,620,551
+trainable_params: 63,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 13.8/50
+  accuracy: 0.7244712991 +/- 0.0079128706
+  recall: 0.7255022211 +/- 0.0075665678
+  f1-score: 0.7241484995 +/- 0.0080753108
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.2/50
+  accuracy: 0.5966460436 +/- 0.0085166202
+  recall: 0.5963255017 +/- 0.0120318683
+  f1-score: 0.5667628296 +/- 0.0046677574
+============================================================
+timestamp: 2026-04-05 05:21:20
+label: transformer_h10_l3
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,651,051
+trainable_params: 93,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.4/50
+  accuracy: 0.7244712991 +/- 0.0081961692
+  recall: 0.7286454269 +/- 0.0097443342
+  f1-score: 0.7232348146 +/- 0.0081306703
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 13.2/50
+  accuracy: 0.5919732986 +/- 0.0066334030
+  recall: 0.5871483773 +/- 0.0057818731
+  f1-score: 0.5634938149 +/- 0.0055652474
+============================================================
+timestamp: 2026-04-05 05:39:44
+label: transformer_h10_l5
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,712,051
+trainable_params: 154,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.2/50
+  accuracy: 0.7187311178 +/- 0.0080160116
+  recall: 0.7199993787 +/- 0.0076335537
+  f1-score: 0.7183160525 +/- 0.0082006663
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 13.8/50
+  accuracy: 0.5914685770 +/- 0.0050725198
+  recall: 0.5879455248 +/- 0.0071978176
+  f1-score: 0.5648777284 +/- 0.0087390606
+============================================================
+timestamp: 2026-04-05 06:09:20
+label: transformer_h2_l7
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,773,051
+trainable_params: 215,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 14.0/50
+  accuracy: 0.7274924471 +/- 0.0077966694
+  recall: 0.7289590465 +/- 0.0069049346
+  f1-score: 0.7270386769 +/- 0.0080953611
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 16.6/50
+  accuracy: 0.5854119179 +/- 0.0061392533
+  recall: 0.5820037419 +/- 0.0060425645
+  f1-score: 0.5581428982 +/- 0.0078457499
+============================================================
+timestamp: 2026-04-05 06:25:17
+label: transformer_h2_l10
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,864,551
+trainable_params: 307,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (7): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (8): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (9): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.4/50
+  accuracy: 0.7256797583 +/- 0.0093898914
+  recall: 0.7274413707 +/- 0.0101331333
+  f1-score: 0.7251632177 +/- 0.0092229556
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 16.8/50
+  accuracy: 0.5859166395 +/- 0.0108771791
+  recall: 0.5842905998 +/- 0.0091566148
+  f1-score: 0.5586113865 +/- 0.0115966561
+============================================================
+timestamp: 2026-04-05 06:46:09
+label: transformer_h2_l12
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,925,551
+trainable_params: 368,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (7): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (8): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (9): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (10): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (11): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-1): 2 x Head(
+            (key): Linear(in_features=50, out_features=25, bias=False)
+            (query): Linear(in_features=50, out_features=25, bias=False)
+            (value): Linear(in_features=50, out_features=25, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 16.6/50
+  accuracy: 0.7287009063 +/- 0.0124784752
+  recall: 0.7317941319 +/- 0.0132382392
+  f1-score: 0.7278098830 +/- 0.0123873592
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 17.2/50
+  accuracy: 0.5855096060 +/- 0.0067724510
+  recall: 0.5841597381 +/- 0.0066130356
+  f1-score: 0.5564742418 +/- 0.0116193424
+============================================================
+timestamp: 2026-04-05 07:11:09
+label: transformer_h5_l7
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,773,051
+trainable_params: 215,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.0/50
+  accuracy: 0.7262839879 +/- 0.0093313868
+  recall: 0.7266301719 +/- 0.0090868411
+  f1-score: 0.7261734619 +/- 0.0094178229
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.2/50
+  accuracy: 0.5856235754 +/- 0.0043126812
+  recall: 0.5844262750 +/- 0.0071358402
+  f1-score: 0.5592231674 +/- 0.0018462196
+============================================================
+timestamp: 2026-04-05 07:35:55
+label: transformer_h5_l10
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,864,551
+trainable_params: 307,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (7): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (8): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (9): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.0/50
+  accuracy: 0.7283987915 +/- 0.0168860285
+  recall: 0.7292475541 +/- 0.0173409907
+  f1-score: 0.7281631304 +/- 0.0167858732
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 15.4/50
+  accuracy: 0.5913383263 +/- 0.0085634285
+  recall: 0.5935338178 +/- 0.0103067287
+  f1-score: 0.5583909100 +/- 0.0131266476
+============================================================
+timestamp: 2026-04-05 08:08:45
+label: transformer_h5_l12
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,925,551
+trainable_params: 368,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (7): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (8): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (9): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (10): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (11): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-4): 5 x Head(
+            (key): Linear(in_features=50, out_features=10, bias=False)
+            (query): Linear(in_features=50, out_features=10, bias=False)
+            (value): Linear(in_features=50, out_features=10, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 16.8/50
+  accuracy: 0.7172205438 +/- 0.0071748291
+  recall: 0.7180962057 +/- 0.0078116145
+  f1-score: 0.7169484103 +/- 0.0069846526
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.2/50
+  accuracy: 0.5916151091 +/- 0.0048859218
+  recall: 0.5932075919 +/- 0.0072794080
+  f1-score: 0.5581948456 +/- 0.0090652907
+============================================================
+timestamp: 2026-04-05 08:44:52
+label: transformer_h10_l7
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,773,051
+trainable_params: 215,651
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 17.2/50
+  accuracy: 0.7323262840 +/- 0.0043150625
+  recall: 0.7329146170 +/- 0.0041787688
+  f1-score: 0.7321556324 +/- 0.0043749028
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.4/50
+  accuracy: 0.5910615435 +/- 0.0042264431
+  recall: 0.5864196572 +/- 0.0103179520
+  f1-score: 0.5653325459 +/- 0.0068804131
+============================================================
+timestamp: 2026-04-05 09:24:58
+label: transformer_h10_l10
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,864,551
+trainable_params: 307,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (7): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (8): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (9): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.2/50
+  accuracy: 0.7238670695 +/- 0.0117164468
+  recall: 0.7277703474 +/- 0.0089911661
+  f1-score: 0.7226003297 +/- 0.0127461574
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 13.4/50
+  accuracy: 0.5880169326 +/- 0.0033332642
+  recall: 0.5871525638 +/- 0.0062297618
+  f1-score: 0.5576606723 +/- 0.0048171665
+============================================================
+timestamp: 2026-04-05 10:16:30
+label: transformer_h10_l12
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,925,551
+trainable_params: 368,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (6): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (7): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (8): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (9): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (10): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (11): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 14.6/50
+  accuracy: 0.7223564955 +/- 0.0099008880
+  recall: 0.7226430246 +/- 0.0096492682
+  f1-score: 0.7222601061 +/- 0.0099987135
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 15.0/50
+  accuracy: 0.5900032563 +/- 0.0074629308
+  recall: 0.5893029076 +/- 0.0062956568
+  f1-score: 0.5614627363 +/- 0.0072488886
+============================================================
+timestamp: 2026-04-05 11:23:10
+label: transformer_default_h10_l6
+embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
+emb_trainable: False
+max_sentence_length: 40
+batch_size: 128
+max_epochs: 50
+learning_rate: 0.001
+optimizer: Adam
+patience: 5
+val_size: 0.2
+device: cuda
+total_params: 64,742,551
+trainable_params: 185,151
+
+architecture:
+TransformerEncoderModel(
+  (token_embedding_table): Embedding(1291148, 50)
+  (position_embedding_table): Embedding(40, 50)
+  (blocks): Sequential(
+    (0): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (1): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (2): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (3): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (4): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+    (5): Block(
+      (sa): MultiHeadAttention(
+        (heads): ModuleList(
+          (0-9): 10 x Head(
+            (key): Linear(in_features=50, out_features=5, bias=False)
+            (query): Linear(in_features=50, out_features=5, bias=False)
+            (value): Linear(in_features=50, out_features=5, bias=False)
+            (dropout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (proj): Linear(in_features=50, out_features=50, bias=True)
+        (dropout): Dropout(p=0.0, inplace=False)
+      )
+      (ffwd): FeedFoward(
+        (net): Sequential(
+          (0): Linear(in_features=50, out_features=200, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=200, out_features=50, bias=True)
+          (3): Dropout(p=0.2, inplace=False)
+        )
+      )
+      (ln1): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+      (ln2): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (ln_f): LayerNorm((50,), eps=1e-05, elementwise_affine=True)
+  (output): Linear(in_features=50, out_features=1, bias=True)
+)
+
+Dataset: MR
+  reps: 5
+  avg_epochs_run: 15.0/50
+  accuracy: 0.7202416918 +/- 0.0103515660
+  recall: 0.7211135861 +/- 0.0102425859
+  f1-score: 0.7199615726 +/- 0.0104295551
+
+Dataset: Semeval2017A
+  reps: 5
+  avg_epochs_run: 14.2/50
+  accuracy: 0.6005861283 +/- 0.0041575164
+  recall: 0.5935621399 +/- 0.0053492628
+  f1-score: 0.5737051340 +/- 0.0064421804

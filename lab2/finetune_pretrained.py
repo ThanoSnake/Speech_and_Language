@@ -45,39 +45,25 @@ DATASETS = {
     "MR": {
         "loader": load_MR,
         "models": [
-            # "bert-base-uncased",
-            # "distilbert-base-uncased",
-            # "roberta-base",
+            "bert-base-uncased",
+            "distilbert-base-uncased",
+            "roberta-base",
         ],
     },
     "Semeval2017A": {
         "loader": load_Semeval2017A,
         "models": [
-            # "cardiffnlp/twitter-roberta-base",
+            "cardiffnlp/twitter-roberta-base",
             "vinai/bertweet-base",
             "bert-base-cased",
         ],
     },
 }
 
-# ============================================================
-# Training hyperparameters
-# ============================================================
-# max_length=128 is enough for tweets (~30 tokens) and movie
-# reviews (~50 tokens). Padding to 512 (the model default) would
-# waste ~4x memory on activations for no benefit.
-# With max_length=128, the bottleneck model (bertweet, 135M params)
-# uses ~3.7 GB: 2.1 GB static + 1.5 GB activations @ batch=32.
-# Fits comfortably on an 8 GB GPU (3060 Ti / Colab T4).
-
 NUM_EPOCHS = 5
 BATCH_SIZE = 32
 LEARNING_RATE = 5e-5
 MAX_LENGTH = 128
-
-# ============================================================
-# Metrics
-# ============================================================
 
 
 def compute_metrics(eval_pred):
@@ -91,10 +77,6 @@ def compute_metrics(eval_pred):
         "f1": f1_score(labels, predictions, average=average),
     }
 
-
-# ============================================================
-# Helpers
-# ============================================================
 
 # Global tokenizer — updated in the loop for each model
 tokenizer = None

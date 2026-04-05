@@ -1,14 +1,5 @@
-Dataset: MR
-  accuracy: 0.6963746223564955
-  recall: 0.6963907550752154
-  f1-score: 0.6963683868244207
-
-Dataset: Semeval2017A
-  accuracy: 0.6115271898404429
-  recall: 0.6237251843375368
-  f1-score: 0.5757126434925862
 ============================================================
-timestamp: 2026-04-04 21:29:39
+timestamp: 2026-04-05 00:48:59
 label: self_attention
 embeddings: wiki_giga_2024_50_MFT20_vectors_seed_123_alpha_0.75_eta_0.075_combined.txt (dim=50)
 emb_trainable: False
@@ -20,6 +11,8 @@ optimizer: Adam
 patience: 5
 val_size: 0.2
 device: cuda
+total_params: 64,590,951
+trainable_params: 33,551
 
 architecture:
 SimpleSelfAttentionModel(
@@ -31,6 +24,7 @@ SimpleSelfAttentionModel(
     (value): Linear(in_features=50, out_features=50, bias=False)
     (dropout): Dropout(p=0.0, inplace=False)
   )
+  (proj): Linear(in_features=50, out_features=50, bias=True)
   (ffwd): FeedFoward(
     (net): Sequential(
       (0): Linear(in_features=50, out_features=200, bias=True)
@@ -45,13 +39,15 @@ SimpleSelfAttentionModel(
 )
 
 Dataset: MR
-  epochs_run: 16/50
-  accuracy: 0.7235649546827795
-  recall: 0.7235669952537422
-  f1-score: 0.7235643239024925
+  reps: 15
+  avg_epochs_run: 16.8/50
+  accuracy: 0.7241691843 +/- 0.0082332058
+  recall: 0.7244958397 +/- 0.0082972549
+  f1-score: 0.7240698838 +/- 0.0082220655
 
 Dataset: Semeval2017A
-  epochs_run: 20/50
-  accuracy: 0.5985021165744058
-  recall: 0.5937200894493784
-  f1-score: 0.5666635845309628
+  reps: 15
+  avg_epochs_run: 20.7/50
+  accuracy: 0.5914685770 +/- 0.0070428675
+  recall: 0.5886292600 +/- 0.0098101850
+  f1-score: 0.5622873579 +/- 0.0064423163

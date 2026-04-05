@@ -1,0 +1,33 @@
+Dataset: Semeval2017A
+============================================================
+
+Model: cardiffnlp/twitter-roberta-base
+  samples: 12284
+  training_time: 1933.3s
+  epochs: 5
+  batch_size: 32
+  learning_rate: 5e-05
+  accuracy: 0.7028655161185282
+  recall: 0.7177381604924177
+  f1-score: 0.7037686889766626
+
+Model: vinai/bertweet-base
+  samples: 12284
+  training_time: 2585.5s
+  epochs: 5
+  batch_size: 32
+  learning_rate: 5e-05
+  accuracy: 0.7002605014653207
+  recall: 0.7170057815504342
+  f1-score: 0.7016602635737578
+
+Model: bert-base-cased
+  samples: 12284
+  training_time: 2801.9s
+  epochs: 5
+  batch_size: 32
+  learning_rate: 5e-05
+  accuracy: 0.6737219146857701
+  recall: 0.6728644421127586
+  f1-score: 0.6692598982329875
+

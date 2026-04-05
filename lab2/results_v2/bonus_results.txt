@@ -1,0 +1,31 @@
+Bonus experiments — fine-tuning textattack/bert-base-uncased-SST-2 on MR
+=========================================================================
+
+Full fine-tuning (all params unfrozen)
+  LR: 2e-5, batch: 32, warmup: 10%, 6 epochs
+  eval_loss: 0.5974
+  eval_accuracy: 0.9003
+  eval_recall: 0.8761
+  eval_f1: 0.8978
+  Note: overfitting starts around epoch 3-4
+
+LORA:
+Key design choices:
+  - LoRA rank 8 on all attention + FFN layers (query, key, value, attention output, intermediate, output dense)
+  - Classifier head in modules_to_save — this makes it fully trainable (not low-rank), since it's tiny and task-critical
+  - LR 2e-4 — LoRA works better with ~10x higher learning rate than full fine-tuning since the adapter weights start
+  from zero
+  - Same warmup/batch settings as before, 6 epochs
+
+trainable params: 1,328,642 || all params: 110,812,420 || trainable%: 1.1990
+========================================
+Results after 6 total epochs:
+  eval_loss: 0.4126
+  eval_accuracy: 0.9048
+  eval_recall: 0.8761
+  eval_f1: 0.9020
+  eval_runtime: 3.1073
+  eval_samples_per_second: 213.0450
+  eval_steps_per_second: 26.7110
+  epoch: 6.0000
+========================================

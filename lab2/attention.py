@@ -17,8 +17,13 @@ class Head(nn.Module):
 
     def forward(self, x):
         B, T, C = x.shape
+
         k = self.key(x)  # (B,T,C)
         q = self.query(x)  # (B,T,C)
+
+        # The above C breaks for head_scale > 1 so we replace it with:
+        C = k.shape[-1]
+
         # compute attention scores ("affinities")
         # (B, T, C) @ (B, C, T) -> (B, T, T)
         wei = q @ k.transpose(-2, -1) * C**-0.5
@@ -47,7 +52,9 @@ class FeedFoward(nn.Module):
 
 
 class SimpleSelfAttentionModel(nn.Module):
-    def __init__(self, output_size, embeddings, max_length=60):
+    # head_scale was added for a SHA vs MHA scalability test (not included in the report).
+    # At head_scale=1 (default) the model behaves identically to the original implementation.
+    def __init__(self, output_size, embeddings, max_length=60, head_scale=1):
         super().__init__()
 
         self.n_head = 1
@@ -63,8 +70,12 @@ class SimpleSelfAttentionModel(nn.Module):
 
         self.position_embedding_table = nn.Embedding(self.max_length, dim)
 
-        head_size = dim // self.n_head
+        head_size = head_scale * dim // self.n_head
         self.sa = Head(head_size, dim)
+
+        # Add a projection back to dim for when head_scale > 1
+        self.proj = nn.Linear(head_size, dim)
+
         self.ffwd = FeedFoward(dim)
         self.ln1 = nn.LayerNorm(dim)
         self.ln2 = nn.LayerNorm(dim)
@@ -79,7 +90,7 @@ class SimpleSelfAttentionModel(nn.Module):
             torch.arange(T, device=x.device)
         )  # (T,C)
         x = tok_emb + pos_emb  # (B,T,C)
-        x = x + self.sa(self.ln1(x))
+        x = x + self.proj(self.sa(self.ln1(x)))
         x = x + self.ffwd(self.ln2(x))
 
         # TODO: Main-lab-Q3 - avg pooling to get a sentence embedding
@@ -101,7 +112,7 @@ class MultiHeadAttention(nn.Module):
     def __init__(self, num_heads, head_size, n_embd, dropout=0.0):
         super().__init__()
         self.heads = nn.ModuleList([Head(head_size, n_embd) for _ in range(num_heads)])
-        self.proj = nn.Linear(n_embd, n_embd)
+        self.proj = nn.Linear(num_heads * head_size, n_embd)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
@@ -111,7 +122,7 @@ class MultiHeadAttention(nn.Module):
 
 
 class MultiHeadAttentionModel(nn.Module):
-    def __init__(self, output_size, embeddings, max_length=60, n_head=3):
+    def __init__(self, output_size, embeddings, max_length=60, n_head=3, head_scale=1):
         super().__init__()
         # TODO: Main-Lab-Q4 - define the model
         # Hint: it will be similar to `SimpleSelfAttentionModel` but
@@ -133,7 +144,7 @@ class MultiHeadAttentionModel(nn.Module):
         assert dim % self.n_head == 0, (
             f"n_embd ({dim}) must be divisible by num_heads ({self.n_head}) beacuse of dumb impl"
         )
-        head_size = dim // self.n_head
+        head_size = head_scale * dim // self.n_head
         self.ma = MultiHeadAttention(n_head, head_size, dim)
         self.ffwd = FeedFoward(dim)
         self.ln1 = nn.LayerNorm(dim)
